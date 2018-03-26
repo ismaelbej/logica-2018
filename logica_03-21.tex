@@ -1,0 +1,173 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Preeliminares}
+
+\begin{notc}
+El conjunto de los números naturales es el conjunto:
+
+\[\mathbb N = \{ 0, 1, 2, 3, \dots \}\]
+\end{notc}
+
+\[
+\text{Principio de inducción:}
+\begin{cases}
+&\text{Versión estándard} \\
+&\text{Versión general (principio de inducción completo)}
+\end{cases}
+\]
+
+\section{Alfabeto y Lenguajes}
+
+\begin{defn}
+Un \textbf{alfabeto} es un conjunto $A$ no vacío.
+\end{defn}
+
+\begin{defn}
+Una \textbf{expresión} sobre un alfabeto $A$ es una sucesión o
+secuencia finita sobre $A$. Más precisamente una expresión sobre $A$ es
+una sucesión: $a_0, a_1, \dots, a_n$ con $a_i \in A$.
+\end{defn}
+
+\begin{remk}
+El número $n+1$ se denomina la \textbf{longitud} de la expresión,
+\end{remk}
+
+\begin{notc}
+$\ell(a_0a_1\dots a_n) = n+1$
+\end{notc}
+
+\begin{notc}
+Notaremos $A^*$ al conjunto de todas las expresiones sobre $A$
+\end{notc}
+
+\begin{exap}
+$A = \{0, 1\}$ una expresión sobre $A$ es por ejemplo: $001100$
+\end{exap}
+
+\begin{exap}
+$A = \{a, b, c, \dots, z\}$ una expresión sobre $A$ es: $bcdf$
+\end{exap}
+
+\begin{defn}
+Sea $A$ un alfabeto y sean $E, F \in A^*$, la concatenación 
+de $E$ con $F$ es la expresión $EF$ que se define del siguiente modo, 
+si $E = a_0a_1\dots a_n$ y $F = b_0b_1\dots b_m$ entonces:
+
+\[ EF = a_0a_1\dots a_nb_0b_1\dots b_m \]
+\end{defn}
+
+\begin{remk}
+$\ell(EF) = \ell(E) + \ell(F)$.
+\end{remk}
+
+\begin{notc}
+Si $E,F \in A^*$ diremos que $F$ es una \textbf{sección inicial} de $E$ si
+existe $G \in A^*$ tal que $E = FG$.
+\end{notc}
+
+\begin{remk}
+La expresión vacía es un caso particular de expresión.
+\end{remk}
+
+\begin{prop}
+Si $E, F, G, H \in A^*$ tal que $EF = GH$. Entonces $E$
+es una sección inicial de $G$ ó $G$ es una sección inicial de $E$.
+
+Más aún si $\ell(E) \ge \ell(G)$ entonces $G$ es sección inicial de $E$.
+\end{prop}
+
+\begin{demo}[Por inducción]
+Sea $P(n) =$  ``Si $E \in A^*$ tal que $\ell(E) = n$ y $F, G, H \in A^*$
+que verifican $EF = GH$ entonces $E$ es una sección inicial de $G$ si 
+$\ell(E) \le \ell(G)$ ó $G$ es una sección inicial de $E$ si 
+$\ell(G) \le \ell(E)$''.
+\end{demo}
+
+\begin{enumerate}
+\item $P(0)$ se cumple trivialmente.
+\item $P(n) \Rightarrow P(n+1)$.
+
+Sea $E \in A^*$ con $\ell(E) = n+1$ con 
+
+\[ 
+\begin{align*}
+E &= e_0e_1\dots e_n \\
+F &= f_0f_1\dots f_m \\
+G &= g_0g_1\dots g_k \\
+H &= h_0h_1\dots h_l
+\end{align*}
+\]
+
+Como $EF = GH$ entonces $e_0e_1\dots e_nf_0f_1\dots f_m = g_0g_1\dots g_kh_0h_1\dots h_l$
+luego $e_0 = g_0$ entonces $\underbrace{e_1\dots e_n}_{E'}f_0f_1\dots f_m 
+= \underbrace{g_1\dots g_k}_{G'}h_0h_1\dots h_l$.
+
+Por hipótesis inductiva tenemos $\ell(E') = n$ y luego vale la tesis 
+lo que implica $E'$ es sección inicial de $G'$ ó $G'$ es sección
+inicial de $E'$.
+
+\[
+\begin{align*}
+E' &= G'\_ & &\Rightarrow & e_0E' &= g_0 G'\_ & &\iff & E &= G\_\\
+G' &= E'\_ & & & g_0 G' &= e_0 E'\_ & & & G &= E\_
+\end{align*}
+\]
+
+Entonces $E$ es una sección inicial de $G$ ó al revés.
+\end{enumerate}
+
+\begin{defn}
+Sea $A$ un alfabeto un \textbf{lenguaje} $\mathcal L$ sobre $A$ 
+es un subconjunto no vacío de $\mathcal L$ de $A^*$ (expresiones sobre $A$).
+\end{defn}
+
+\begin{exap}
+$A = \{0, 1, 2, \dots, 9\}$, 
+
+$\mathcal L = \{ E \in A^* : 
+E \textrm{ es un número natural} \}$
+
+$E \in \mathcal L \iff \ell(E) = 1$ ó $\ell(E) > 1$ y 
+$E = a_0a_1\dots a_n$ con $a_0 \ne 0$.
+\end{exap}
+
+\begin{exap}
+$A = \{a, b, c, \dots, z\}$, 
+
+$\mathcal L = \{ E \in A^* : 
+\substack{E \text{ es una palabra que aparece} \\ \text{en el diccionario de la RAE}}\}$
+
+$x \in A,\quad x, xx, xxx, \dots, \underbrace{xx\dots x}_{n\textrm{ veces}} 
+, \dots\in A^*$ son expresiones pero no estan en el lenguaje $\mathcal L$.
+
+$boda, casamiento \in \mathcal L$, sintácticamente no son iguales,
+semánticamente representan lo mismo.
+\end{exap}
+
+\begin{exap}
+$A = \{A,C,G,T\}$
+\end{exap}
+
+
+
+\end{document}
