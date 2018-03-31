@@ -1,0 +1,189 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,enumitem}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+
+\newtheorem*{prob}{Problema}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Lógica Proposicional}
+
+\begin{defn} Alfabeto
+
+$Alfabeto = Conectivos \cup Variables\ Proposicionales \cup Par\acute entesis$
+
+$Conectivos = \{ \neg, \vee, \wedge, \Rightarrow \}$
+
+$\neg = \text{``negación''}, \vee = \text{``disyunción''}, \wedge = \text{``conjunción''},
+\Rightarrow = \text{``implicación''}$.
+
+$Variables\ Proposicionales = \{ P_0, P_1, \dots, P_n, \dots \}$
+
+$Par\acute entesis = \{(,)\}$
+\end{defn}
+
+\begin{defn}
+Otra alternativa: 
+
+$Alfabeto = Conectivos \cup Par\acute entesis \cup \{P,|\}$
+
+$P_0 = P, P_1 = P|, P_2 = P||, \dots, P_n = P\underbrace{||\dots|}_{n\text{ veces}}, \dots$.
+\end{defn}
+
+\section{Fórmulas}
+
+\begin{defn}
+Definición informal: Una \textbf{fórmula} es una expresión sobre el alfabeto anterior
+que se define inductivamente como sigue:
+
+\begin{enumerate}
+\item $P_n$ es fórmula $\forall n \in \mathbb N$
+\item Si $\alpha$ es fórmula entonces $\neg\alpha$ es fórmula
+\item Si $\alpha$ y $\beta$ son fórmulas entonces $(\alpha \wedge \beta),
+(\alpha \vee \beta), (\alpha \Rightarrow \beta)$ es fórmula
+\item Una expresión es fórmula si y sólo si se obtiene en un 
+número finito de pasos utilizando las reglas 1), 2) y 3)
+\end{enumerate}
+
+\end{defn}
+
+\begin{exap}
+$P_2, \neg\neg P_2$ son fórmulas
+\end{exap}
+
+\begin{defn}
+Sea $A$ el alfabeto de la lógica proposicional, una \textbf{cadena de
+formación} es una sucesión finita $X_1, X_2, \dots, X_n$ de expresiones
+sobre $A$ que satisfacen las siguientes condiciones:
+
+\begin{enumerate}
+\item $X_1$ es variable proposicional.
+\item Si $i \in \{1\dots n\}$ entonces $X_i$ es una variable proposicional,
+
+ó existe $j < i$ tal que $X_i = \neg X_j$, 
+
+ó existen $j, k < i$ y $\ast \in \{ \vee, \wedge, \Rightarrow \}$ tal que 
+$X_i = (X_j \ast X_k)$.
+\end{enumerate}
+\end{defn}
+
+\begin{defn}
+Una \textbf{fórmula} $\alpha$ es una expresión sobre $A$ tal que existe una
+cadena de formación $X_1, X_2, \dots, X_n$ donde $X_n = \alpha$.
+\end{defn}
+
+\begin{defn}
+Las expresiones $X_i$ se llaman \textbf{eslabones}.
+\end{defn}
+
+\begin{notc}
+Notamos con $\mathcal F$ al conjunto de todas la fórmulas.
+\end{notc}
+
+\begin{defn}
+$\mathcal F$ se denomina el lenguaje de la lógica proposicional.
+\end{defn}
+
+\begin{remk}
+\begin{enumerate}
+\item Si $X_1, X_2,\dots X_n$ es una cadena de formación de una fórmula $\alpha$. 
+Entonces $X_i$ es fórmula $\forall 1 \le i \le n$.
+\item La cadena de formación no es única, toda fórmula $\alpha$ admite
+infinitas cadenas de formación.
+\end{enumerate}
+\end{remk}
+
+\begin{exap}
+\begin{enumerate}
+\item $\alpha = P_2$ son cadenas de formación: a) $X_1 = P_2$ y b) $X_1 = P_3, X_2 = P2$.
+\item Sea $\alpha \in \mathcal F$, si $X_1, \dots, X_n=\alpha$ 
+para cada variable proposicional $P_0$ podemos construir las siguientes cadenas de formación.
+
+$P_0, X_1, \dots, X_n$, 
+
+$P_0, P_0, X_1, \dots, X_n$.
+\end{enumerate}
+\end{exap}
+
+\begin{defn}
+Sea $\alpha \in \mathcal F$ una cadena de formación se dice 
+\textbf{minimal} si satisface la siguiente propiedad:
+
+Si $X_{j_1}, \dots, X_{j_k}$ es subcadena de formación de 
+$X_1, \dots, X_n$ de $\alpha$ entonces $k = n$ y 
+$X_{j_1} = X_1, \dots , X_{j_k} = X_n$.
+\end{defn}
+
+\begin{exap}
+\begin{enumerate}
+\item $\alpha = \neg\neg\neg P_3$ la única cadena de formación minimal
+de $\alpha$ es $P_3, \neg P_3, \neg\neg P_3, \alpha$.
+\item $\alpha = (P_1 \Rightarrow (P_2 \Rightarrow P_3))$ son cadenas de
+formación minimales las siguientes:
+\begin{enumerate}[label=\alph*)]
+\item $P_2, P_1, P_3, (P_2 \Rightarrow P_3), \alpha$
+\item $P_1, P_2, P_3, (P_2 \Rightarrow P_3), \alpha$
+\end{enumerate}
+\end{enumerate}
+\end{exap}
+
+\begin{prob}[Difícil]
+Si $\alpha \in \mathcal F$ determinar el número de cadenas
+de formación minimal de $\alpha$.
+\end{prob}
+
+\begin{defn}
+Si $\alpha \in \mathcal F$ se define la \textbf{complejidad} de $\alpha$
+y se nota $c(\alpha)$ como el número de conectivos que aparecen
+en $\alpha$ contados tantas veces como aparecen.
+\end{defn}
+
+\begin{exap}
+Si $\alpha = (P_1 \Rightarrow (P_2 \Rightarrow P_3)), c(\alpha) = 2$
+\end{exap}
+
+\begin{defn}[Definición inductiva]
+$c(\alpha)$ se puede definir del siguiente modo:
+
+Si $\alpha = P_1$ entonces $c(\alpha) = 0$,
+
+ó $\alpha = \neg \beta$ (con $\beta \in \mathcal F$)
+entonces $c(\alpha) = 1 + c(\beta)$,
+
+ó $\alpha = (\alpha_1 \ast \alpha_2)$ (con $\ast \in \{\vee, 
+\wedge, \Rightarrow \}$, $\alpha_1, \alpha_2 \in \mathcal F$) entonces 
+$c(\alpha) = 1 + c(\alpha_1) + c(\alpha_2)$.
+\end{defn}
+
+\begin{defn}
+La \textbf{complejidad binaria} de $\alpha$ es el número de conectivos binarios
+que aparecen en $\alpha$ contados tantas veces como aparecen.
+\end{defn}
+
+\begin{remk}
+$c(\alpha) = 0 \iff \alpha\text{ es una variable proposicional}$
+\end{remk}
+
+\begin{notc}
+$cb(\alpha)$ = ``complejidad binaria''.
+
+$cb(\alpha) = 0$ si y sólo si $\alpha = \underbrace{\neg\neg\dots\neg}_{k\text{ veces}} P_1$.
+\end{notc}
+
+\end{document}

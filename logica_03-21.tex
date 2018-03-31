@@ -154,8 +154,8 @@ $E = a_0a_1\dots a_n$ con $a_0 \ne 0$.
 \begin{exap}
 $A = \{a, b, c, \dots, z\}$, 
 
-$\mathcal L = \{ E \in A^* : 
-\substack{E \text{ es una palabra que aparece} \\ \text{en el diccionario de la RAE}}\}$
+$\mathcal L = \left\{ E \in A^* : 
+\substack{E \text{ es una palabra que aparece} \\ \text{en el diccionario de la RAE}}\right\}$
 
 $x \in A,\quad x, xx, xxx, \dots, \underbrace{xx\dots x}_{n\textrm{ veces}} 
 , \dots\in A^*$ son expresiones pero no estan en el lenguaje $\mathcal L$.
@@ -165,9 +165,14 @@ semánticamente representan lo mismo.
 \end{exap}
 
 \begin{exap}
-$A = \{A,C,G,T\}$
+$A = \{A,C,G,T\}$ Alfabeto del ADN
+
+$\mathcal L = \left\{ E \in A^* : \text{E es de la forma } 
+ACGT\underbrace{AAA\ CGA\ \_\_\_}_{\text{expr. long. 3}}\dots \substack{TGA \\ TAG \\ TAA}\right\}$
 \end{exap}
 
-
+\begin{exap}
+Lenguaje de programación: $v \leftarrow v + 1$, $v \leftarrow v - 1$, if $v \ne 0$ goto A$.
+\end{exap}
 
 \end{document}
