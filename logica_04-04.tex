@@ -1,0 +1,157 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\mathcal{F}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Interpretación de las Fórmulas}
+
+\begin{defn}
+Una \textbf{valuación} es una función $v : F \to \{0, 1\}$, siendo $F$ el conjunto de todas
+las fórmulas, que verifica las siguientes condiciones:
+
+\begin{enumerate}[label=\emph{\alph*})]
+\item Si $\alpha \in F$  entonces $v(\neg \alpha) = 1 - v(\alpha)$.
+\item Si $\alpha, \beta \in F$ entonces $v((\alpha\vee\beta)) = \max\{v(\alpha), v(\beta)\}$.
+\item Si $\alpha, \beta \in F$ entonces $v((\alpha\wedge\beta)) = \min\{v(\alpha), v(\beta)\}$.
+\item Si $\alpha, \beta \in F$ entonces $v((\alpha\Rightarrow\beta)) = \max\{1 - v(\alpha), v(\beta)\}$.
+\end{enumerate}
+\end{defn}
+
+\begin{teor}
+Sea $Var$ el conjunto de las variables proposicionales y sea $\mathcal F : Var \to \{0, 1\}$. Entonces
+existe una única valuación $v_{\mathcal F} : F \to \{0, 1\}$ que extiende a $\mathcal F$ es decir
+$\mathcal F(P_i) = v_{\mathcal F}(P_i)\ \forall i \in \mathbb N$.
+\end{teor}
+
+\begin{exap}
+Sea $\mathcal F : Var \to \{0, 1\}$ la siguiente función 
+\[\mathcal F(P_i) = \begin{cases}
+1 & i \text{ es par} \\
+0 & i \text{ es impar}
+\end{cases} \]
+Sea $\alpha = ((P_1 \Rightarrow P_2) \Rightarrow P_3)$, como $\mathcal F(P_1) = 0, \mathcal F(P_2) = 1, 
+\mathcal F(P_3) = 0$, entonces $v_{\mathcal F}(\alpha) = 0$.
+\end{exap}
+
+\begin{demo}[Teorema]
+1) Unicidad: 
+
+Sean $v_1$ y $v_2$ dos valuaciones que extienden a $\mathcal F$. Veamos que $v_1 = v_2$.
+
+Sea $\alpha \in F$ debemos ver que $v_1(\alpha) = v_2(\alpha)$. Sea $X_1, X_2, \dots, X_n$ una 
+cadena de formación de $\alpha$. Basta ver que $v_1(X_i) = v_2(X_i)$ para $1 \le i \le n$.
+
+Usando inducción:
+\begin{itemize}
+\item Si $i = 1$ $X_i$ es una variable proposicional $P_1$. Por hipótesis
+$v_1(P_1) = \mathcal F(P_1) = v_2(P_1)$.
+\item Sea $1 < i \le n$ y supongamos que $v_1(X_j) = v_2(X_j)$ si $j < i$ (hipótesis inductiva).
+Vamos a probar que $v_1(X_i) = v_2(X_i)$
+
+\begin{enumerate}[label=\emph{\roman*})]
+\item Si $X_i$ es variable proposicional se prueba como en el caso base.
+\item Si $X_i = \neg X_j$ con $j < i$ tenemos $v_1(X_i) = v_1(\neg X_j) = 1 - v_1(X_j)$.
+Similarmente $v_2(X_i) = v_2(\neg X_j) = 1 - v_2(X_j)$. Por hipótesis inductiva
+$v_1(X_j) = v_2(X_j)$ lo que implica $v_1(X_i) = v_2(X_i)$.
+\item Si $X_i = (X_j \vee X_k)$ con $j, k < i$, vale que $v_1(X_i) = \max\{v_1(X_j), v_1(X_k)\}$
+y $v_2(X_i) = \max\{v_2(X_j), v_2(X_k)\}$, por hipótesis inductiva $v_1(X_j) = v_2(X_j)$ y
+$v_1(X_k) = v_2(X_k)$ lo que implica $v_1(X_i) = v_2(X_i)$
+\end{enumerate}
+Los demás casos $X_i = (X_j \wedge X_k)$ y $X_i = (X_j \Rightarrow X_k)$ con $j, k < i$
+se prueban análogamente.
+\end{itemize}
+
+2) Existencia:
+
+Queremos calcular el valor de $v_{\mathcal F}(\alpha)\ \forall \alpha \in F$.
+
+Haciendo inducción en $c(\alpha) = n$:
+
+\begin{enumerate}
+\item Si $n=0$, $\alpha \in Var$, $\alpha = P_i$ y luego definimos 
+$v_{\mathcal F}(\alpha) = \mathcal F(P_i)$.
+\item Supongamos que hemos definido $v_{\FF}(\beta)$ si $c(\beta) < n$ (hipótesis inductiva).
+
+Si $\alpha \in F$ y $c(\alpha) = n,\ (n > 0)$, tenemos los siguientes casos.
+\begin{enumerate}[label=\emph{\alph*})]
+\item $\alpha = \neg\beta$
+\item $\alpha = (\beta_1 \vee \beta_2)$
+\item $\alpha = (\beta_1 \wedge \beta_2)$
+\item $\alpha = (\beta_1 \Rightarrow \beta_2)$
+\end{enumerate}
+con $\beta, \beta_1, \beta_2$ fórmulas.
+
+En el caso a) se define $v_{\FF}(\alpha) = 1 - v_{\FF}(\beta)$, donde
+$v_{\FF}(\beta)$ es conocido por hipótesis inductiva.
+
+En los casos b), c) y d) se define $v_{\FF}(\alpha) = \max\{v_{\FF}(\beta_1), v_{\FF}(\beta_2)\}$,
+$v_{\FF}(\alpha) = \min\{v_{\FF}(\beta_1), v_{\FF}(\beta_2)\}$ y
+$v_{\FF}(\alpha) = \max\{1 - v_{\FF}(\beta_1), v_{\FF}(\beta_2)\}$ donde
+$v_{\FF}(\beta_1)$ y $v_{\FF}(\beta_2)$ son conocidos por hipótesis inductiva.
+\end{enumerate}
+\end{demo}
+
+\begin{teor}
+Sea $\alpha \in F$ y sea $Var(\alpha)$ el conjunto de variables proposicionales que 
+aparecen en $\alpha$. Si $v_1$ y $v_2$ son dos valuaciones que coinciden en $Var(\alpha)$
+entonces $v_1(\alpha) = v_2(\alpha)$
+\end{teor}
+
+(Prueba como ejercicio)
+
+\begin{exap}
+Dado $\alpha = (P_1 \vee (P_2 \Rightarrow P_3))$, $Var(\alpha) = \{P_1, P_2, P_3\}$. 
+Si $v_1(P_1) = v_2(P_1) = 0, v_1(P_2) = v_2(P_2) = 1, v_1(P_3) = v_2(P_3) = 0$
+y $v_1(P_4) = 1, v_2(P_4) = 0$, entonces $v_1(\alpha) = v_2(\alpha) = 0$.
+\end{exap}
+
+\begin{defn}
+Sea $\alpha \in F$ diremos que $\alpha$ es una \textbf{tautología} si $v(\alpha) = 1$
+para toda valuación $v$. Diremos que $\alpha$ es una \textbf{contradicción} si 
+$v(\alpha) = 0$ para toda valuación $v$. Diremos que $\alpha$ es una \textbf{contingencia}
+si no es ni tautología ni contradicción.
+\end{defn}
+
+\begin{exap}
+\begin{enumerate}
+\item $\alpha = (P_1 \vee \neg P_1)$, $\alpha$ es una tautología.
+\item $\alpha = (\beta \vee \neg \beta)$, con $\beta \in F$, $\alpha$ es una tautología. 
+``Principio del tercer excluido''.
+\item Sabemos $2 = \{0, 1\}$, podriamos definir otra lógica $3 = \{0, \frac{1}{2}, 1\}$,
+como $\neg x = 1 - x$, entonces $\neg \frac{1}{2} = \frac{1}{2}, \neg 1 = 0, \neg 0 = 1$.
+Tenems que $\alpha = (P_1 \vee \neg P_1)$ \emph{no} es una tautología en esta lógica trivalente.
+\end{enumerate}
+\end{exap}
+
+\begin{remk}
+¿Se puede determinar $\alpha$ dada una tabla de verdad? Sí, para la lógica clásica,
+pero no es cierto para otras lógicas.
+\end{remk}
+
+
+\end{document}
