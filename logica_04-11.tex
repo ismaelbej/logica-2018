@@ -1,0 +1,185 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\mathcal{F}}
+\def\NN{\mathbb{N}}
+\def\FFa{\mathcal{F}_{\alpha}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Álgebras de Boole}
+
+\begin{coro}
+Sean $\alpha, \beta \in F$ tales que $Var(\alpha) = Var(\beta)$. Entonces  $\alpha \equiv \beta$
+si y sólo si $\FFa = \FF_{\beta}$.
+\end{coro}
+
+\begin{exap}
+Sea $\alpha = (P_1 \Rightarrow P_4)$, $Var(\alpha) = \{P_1, P_4\}$, $\FFa(0, 0) = 1$, $\FFa(0, 1) = 1$,
+$\FFa(1, 0) = 0$, $\FFa(1, 1) = 1$.
+
+Sea $\beta = (P_1 \Rightarrow P_2)$, $Var(\alpha) = \{P_1, P_2\}$, $\FF_{\beta} = \FFa$.
+
+Sea $v$ la siguiente valuación $v(P_1) = 1, v(P_2) = 0, v(P_4) = 1$ y $v(P_i) = 0$ en otro caso.
+Entonces $v(\alpha) = 1$ y $v(\beta) = 0$, luego $\alpha \not\equiv \beta$.
+\end{exap}
+
+\begin{coro}
+Si fijamos $n$-variables proposicionales, por ejemplo $P_1$, $P_2$, $\dots$, $P_n$, el número total de
+funciones booleanas de $n$-variables es $2^{2^n}$.
+
+En particular existen $2^{2^n}$ fórmulas no equivalentes entre sí cuyas variables son $\{P_1, P_2,
+\dots, P_n\}$.
+\end{coro}
+
+\begin{exap}
+Sea $n = 1$ el número de funciones booleanas es 4. Las siguientes 4 fórmulas son no equivalentes
+entres si:
+
+$\alpha_1 = P_1$, $\alpha_2 = \neg P_1$, $\alpha_1 = (P_1 \vee \neg P_1)$, 
+$\alpha_1 = (P_1 \wedge \neg P_1)$.
+
+Si $\alpha_5 = (P_1 \Rightarrow \neg P_1)$, entonces $\alpha_5 \equiv \alpha_2$.
+\end{exap}
+
+\begin{remk}[Resultado más general]
+Si $A$ y $B$ son conjuntos finitos con $k$ y $m$ elementos respectivamente el número total
+de funciones de $A$ en $B$ es $m^k$.
+\end{remk}
+
+\begin{remk}
+Si $\alpha, \beta \in F$ la relación $\equiv$ definida por $\alpha \equiv \beta$ si y sólo si
+$v(\alpha) = v(\beta)$ para toda valuación $v$ es una relación de equivalencia en $F$.
+
+El conjunto cociente $F/\equiv\ = \{ |\alpha| : \alpha \in F \}$, donde $|\alpha|$ es la clase
+de equivalencia de $\alpha$, $|\alpha| = \{ \beta \in F : \beta \equiv \alpha \}$.
+
+$\alpha \in |\alpha|$, $(\alpha \vee \alpha) \in |\alpha|$ , $\neg \neg \alpha \in |\alpha|$.
+\end{remk}
+
+El conjunto $F / \equiv$ es infinito $|P_0|, |P_1|, \dots \in F/\equiv$. si $i \neq j\ |P_i| \neq |P_j|$.
+
+$F / \equiv$ es un álgebra de Boole. Ejemplo de álgebra de Bool $2 = \{0, 1\}$.
+
+$F / \equiv$ es un conjunto parcialmente ordenado con el siguiente orden 
+$|\alpha| \leq |\beta|$ si y sólo si $(\alpha \Rightarrow \beta)$ es una tautología.
+¿Esta bien definida? Sí.
+
+\begin{enumerate}
+\item $\leq$ es una relación de orden parcial
+\item $|\alpha|$ con $\alpha$ una contradicción es el primer elemento de $F / \equiv$ pues 
+$(\alpha \Rightarrow \beta)$ es tautología $\forall \beta \in F$
+\item $|\beta|$ con $\beta$ tautología es el último elemento de $F / \equiv$.
+\item El supremo entre $|\alpha|$ y $|\beta|$ es $|(\alpha \vee \beta)|$.
+
+Veamos que
+\begin{enumerate}
+\item $|\alpha| \leq |(\alpha \vee \beta)|$ si y sólo si $(\alpha \Rightarrow (\alpha \vee \beta))$
+es tautología. 
+
+Similarmente $|\beta| \leq |(\alpha \vee \beta)|$.
+\item Sea $\gamma \in F$ tal que $|\alpha| \leq |\gamma|$ y $|\beta| \leq |\gamma|$, o sea
+$(\alpha \Rightarrow \gamma)$ y $(\beta \Rightarrow \gamma)$ son tautologías. Veamos que
+$|(\alpha \vee \beta)| \leq \gamma$, o sea que $((\alpha \vee \beta) \Rightarrow \gamma)$
+es tautología.
+
+Sea $v$ una valuación. Si $v((\alpha \vee \beta)) = 0$ entonces 
+$v(((\alpha \vee \beta) \Rightarrow \gamma))$ es tautología.
+
+Si $v((\alpha \vee \beta)) = 1$ entonces $v(\alpha) = 1$ ó $v(\beta) = 1$, entonces
+$v(\gamma) = 1$ en ambos casos.
+\end{enumerate}
+\item Análogamente el ínfimo entre $|\alpha|$ y $|\beta|$ es $|(\alpha \wedge \beta)|$
+\item Llamando 0 al primer elemento de $F/\equiv$ y 1 al último elemento de $F/\equiv$ se
+verifica que si $|\alpha| \in F/equiv$ entonces existe un único $|\beta| \in F/equiv$ tal
+que $\underbrace{|\alpha| \vee |\beta|}_{\text{supremo}} = 1$ y 
+$\underbrace{|\alpha| \wedge |\beta|}_{\text{infimo}} = 0$.
+
+Respuesta: $|\beta| = |\neg \alpha|$.
+\end{enumerate}
+
+\begin{defn}
+Un \textbf{Álgebra de Boole} es un conjunto $B$ parcialmente ordenado (con un orden $\leq$) que verifica
+las condiciones 1) a 6).
+\end{defn}
+
+\begin{exap}
+\begin{enumerate}
+\item $F/\equiv$ es el álgebra de Bool de la lógica proposicional
+\item $F_n/\equiv$ es también un álgebra de Boole finita con $2^{2}$ elementos, donde 
+$F_n = \{\alpha \in F : Var(\alpha) = \{ P_1, \dots, P_n\} \}$.
+
+Si $n=1$ vimos que $F_1/\equiv\ = \{|P_1|, |\neg P_1|, |(P_1 \vee \neg P_1)|, 
+|(P_1 \wedge \neg P_1)|\}$.
+
+\[
+\begin{tikzcd}
+& \left|(P_1 \vee \neg P_1)\right| \arrow[dl, dash]\arrow[dr, dash] & \\
+\left|P_1\right| \arrow[dr, dash] & & \left|\neg P_1\right| \arrow[dl, dash] \\
+& \left|(P_1 \wedge \neg P_1)\right|
+\end{tikzcd}
+\]
+\item $2 = \{0, 1\}$ es el álgebra de Boole con 2 elementos.
+\item $2^3 = 2 \times 2 \times 2$ es un álgebra de Boole con el siguiente orden parcial.
+$(x, y , z) \leq (x', y', z')$ si y sólo si $x \leq x', y \leq y', z \leq z'$.
+
+\[
+\begin{tikzcd}
+& (0, 1, 1) \arrow[dl, dash] \arrow[rr, dash] \arrow[dd, dash] & & (1, 1, 1) \arrow[dl, dash] \arrow[dd, dash] \\
+(0, 0, 1) \arrow[dd, dash] \arrow[rr, dash] & & (1, 0, 1) \arrow[dd, dash] \\
+& (0, 1, 0) \arrow[dl, dash] \arrow[rr, dash] & & (1, 1, 0) \arrow[dl, dash] \\
+(0, 0, 0) \arrow[rr, dash] & & (1, 0, 0) 
+\end{tikzcd}
+\]
+\item Si $X$ es un conjunto $\mathcal P(X)$ el conjunto de partes de $X$ es un álgebra de Boole
+$A \leq B$ si y sólo si $A \subseteq B$ con $A, B \subseteq X$
+
+Si $A, B \in X$ $A \cup B = B \cup A$
+
+Si $x \in A \cup B$ entonces $x \in A$ ó $x \in B$
+
+$p(x) : x \in A$, $q(x) : x \in B$, $(p(x) \vee q(x))$ es verdadera si $p(x)$ ó $q(x)$ es verdadera.
+\end{enumerate}
+\end{exap}
+
+\begin{defn}
+Un conectivo es una ``función booleana'' de $n$-variables, $c : 2^n \to 2$.
+\end{defn}
+
+\begin{exap}
+\begin{itemize}
+\item $c(P_1, P_2, P_3) = ((P_1 \Rightarrow P_2) \Rightarrow P_3)$
+\item $\{\neg, \vee, \wedge, \Rightarrow\}$
+
+Lógica clásica con $\{\neg, \vee\}$ conectivos.
+
+$(\alpha \Rightarrow \beta) \equiv (\neg \alpha \vee \beta)$, 
+$(\alpha \wedge \beta) \equiv \neg(\neg \alpha \vee \neg\beta)$.
+\end{itemize}
+
+\end{exap}
+
+\end{document}
