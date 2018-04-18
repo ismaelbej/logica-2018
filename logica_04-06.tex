@@ -1,0 +1,162 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\mathcal{F}}
+\def\NN{\mathbb{N}}
+\def\FFa{\mathcal{F}_{\alpha}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Funciones booleanas}
+
+\begin{defn}
+Si $\alpha, \beta \in F$ diremos que $\alpha$ y $\beta$ son \textbf{equivalentes} si
+$v(\alpha) = v(\beta)$ para toda valuación $v$. Escribimos $\alpha \equiv \beta$ para
+expresar que $\alpha$ y $\beta$ son equivalentes.
+\end{defn}
+
+\begin{exap}
+\begin{enumerate}
+\item $\alpha = P_2$, $\beta = \neg \neg P_2$.
+\item Si $\alpha$ y $\beta$ son tautologias entonces $\alpha \equiv \beta$.
+\item $\alpha =  ((P_1 \Rightarrow P_2) \Rightarrow P_2)$, $\beta = (P_1 \vee P_2)$. 
+Más generalmente $((\alpha_1 \Rightarrow \alpha_2) \Rightarrow \alpha_2) 
+\equiv (\alpha_1 \vee \alpha_2)$, con $\alpha_1, \alpha_2 \in F$.
+\item $(\alpha_1 \wedge \alpha_2) \equiv \neg (\alpha_1 \Rightarrow \neg \alpha_2)$.
+\end{enumerate}
+\end{exap}
+
+\begin{defn}
+Una función \textbf{booleana} es una función $\FF : 2^n \to 2$ para cierto $n \in \NN\ (n \ge 1)$.
+($2 = \{0, 1\}$, $2^n = 2 \times 2 \times \dots \times 2$).
+\end{defn}
+
+\begin{defn}[Construcción]
+Toda fórmula $\alpha$ induce una función booleana que notaremos con $\FFa$.
+Sea $Var(\alpha) = \{P_{j_1}, P_{j_2}, \dots, P_{j_k}\}$ con $j_1 < j_2 < \dots < j_k$.
+
+En este caso $\FFa : 2^k \to 2$ y se define como sigue:
+
+Sea $\vec{a} = (a_1, a_2, \dots, a_k) \in 2^k$ , definimos la siguiente función
+$g_{\vec{a}} : Var \to \{0, 1\}$ como sigue: $g_{\vec{a}}(P_{j_1}) = a_1. 
+g_{\vec{a}}(P_{j_2}) = a_2, \dots, g_{\vec{a}}(P_{j_k}) = a_k$ y $g_{\vec{a}}(P_i) = 0$
+si $P_i \not\in Var(\alpha)$.
+
+Ahora $g_{\vec{a}}$ induce una valuación $v_{g_{\vec{a}}} : F \to 2$ que extiende a $g_{\vec{a}}$.
+
+Definimos $\FFa(\vec{a}) = v_{g_{\vec{a}}}(\alpha)$.
+\end{defn}
+
+\begin{exap}
+$\alpha = ((P_2 \Rightarrow \neg P_3) \wedge P_7$, $k = 3$, $\FFa : 2^3 \to 2$,
+$\FFa(1, 0, 1) = 1$
+\end{exap}
+
+\begin{teor}
+Si $\FF : 2^n \to 2$ es una función booleana existe una fórmula $\alpha$ con $n$ variables 
+proposicionales tal que $\FFa = \FF$.
+\end{teor}
+
+\begin{exap}
+Sea $\FF : 2^3 \to 2$ dada por $\FF(1, 0, 0) = 1$, $\FF(0, 1, 0) = 1$, $\FF(0, 0, 1) = 1$ y 
+$\FF(x, y, z) = 0$ en otro caso.
+
+$\alpha_1 = ((P_1 \wedge \neg P_2) \wedge \neg P_3)$
+
+$\alpha_2 = ((\neg P_1 \wedge P_2) \wedge \neg P_3)$
+
+$\alpha_3 = ((\neg P_1 \wedge \neg P_2) \wedge P_3)$
+
+Respuesta: $\alpha = ((\alpha_1 \vee \alpha_2) \vee \alpha_3)$.
+
+Otra solución: $\beta = (\alpha_1 \vee (\alpha_2 \vee \alpha_3))$
+
+$\alpha \neq \beta$ pero $\alpha \equiv \beta$.
+\end{exap}
+
+\begin{demo}[Teorema]
+Construimos una fórmula $\alpha$ donde $Var(\alpha) = \{P_1, P_2, \dots, P_n\}$
+
+Sea $T = \{\vec{a} \in 2^n : \FF(\vec{a}) = 1 \}$
+
+Hay dos casos:
+
+1) $T = \emptyset$ basta tomar $\alpha = (\dots ((P_1 \wedge \neg P_1) \wedge P_2 ) \dots \wedge P_n)$
+En este caso $\FFa = \FF$
+
+2) $T \neq \emptyset$ como $T$ es finito $T = \{\vec{a_1}, \vec{a_2}, \dots, \vec{a_k}\}$. 
+Para cada $j \in \{1, \dots, k\}$ definimos la siguiente fórmula 
+$\alpha_{\vec{a_j}} = (\pm P_1 \wedge \pm P_2 \wedge \dots \pm P_n)$ (Esto es
+una simplificación de la siguiente fórmula 
+$(\dots ((\pm P_1 \wedge \pm P_2) \wedge P_3) \dots \pm P_n)$).
+Donde $\pm P_k = \begin{cases}
+                  P_k & \text{si }(\vec{a_j})_k = 1 \\
+                  \neg P_k & \text{si }(\vec{a_j})_k = 0
+                 \end{cases}
+$
+
+Se define $\alpha = (\dots ((\alpha_{\vec{a_1}} \vee \alpha_{\vec{a_2}}) 
+\vee \alpha_{\vec{a_3}})\dots \alpha_{\vec{a_k}})$.
+
+Resulta que $\FFa = \FF. \qed$
+\end{demo}
+
+\begin{defn}
+La fórmula $\alpha$ construida de este modo se denomina \textbf{forma normal disyuntiva}.
+\end{defn}
+
+Si $\alpha = ((P_1 \Rightarrow P_2) \Rightarrow P_3)$ y $\FFa : 2^3 \to 2$ y sea $\beta$
+como en el teorema $\FFa = \FF_{\beta}$. ¿Qué relación hay entre $\alpha$ y $\beta$? Respuesta: 
+$\alpha \equiv \beta$.
+
+\begin{remk}
+Si $\alpha_1$ y $\alpha_2 \in F$ entonces $(\alpha_1 \Rightarrow \alpha_2) 
+\equiv (\neg \alpha_1 \vee \alpha_2)$.
+\end{remk}
+
+Construcción de $\beta$.
+
+$\alpha \equiv (\neg (P_1 \Rightarrow P_2) \vee P_3))$ y como 
+$(P_1 \Rightarrow P_2) \equiv (\neg P_1 \vee P_2)$. Luego 
+$\neg (P_1 \Rightarrow P_2) \equiv \neg(\neg P_1 \vee P_2) 
+\equiv (\neg\neg P_1 \wedge \neg P_2) \equiv (P_1 \wedge \neg P_2)$.
+Luego $\alpha \equiv ((P_1 \wedge \neg P_2) \vee P_3)$.
+
+\begin{remk}
+Otra equivalencias: $\gamma = (\gamma \wedge (\beta \vee \neg \beta)) 
+\equiv (\gamma \wedge \beta) \vee (\gamma \wedge \neg \beta))$
+\end{remk}
+
+$\alpha \equiv ((P_1 \wedge \neg P_2) \wedge P_3) \vee ((P_1 \wedge \neg P_2) \wedge \neg P_3) 
+\vee ((P_3 \wedge P_1) \wedge P_2) \vee ((P_3 \wedge P_1) \wedge \neg P_2)
+\vee ((P_3 \wedge \neg P_1) \wedge P_2) \vee ((P_3 \wedge \neg P_1) \wedge \neg P_2)$.
+
+\begin{exap}
+ Circuitos $P_1 \wedge P_2$, $((P_1 \wedge P_2) \vee P_3)$.
+\end{exap}
+
+
+\end{document}
