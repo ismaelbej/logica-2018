@@ -1,0 +1,150 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\mathcal{F}}
+\def\NN{\mathbb{N}}
+\def\FFa{\mathcal{F}_{\alpha}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Conectivos}
+
+\begin{defn}
+Un conjunto finito de conectivos $c_1, c_2, \dots, c_k$ se dice adecuado
+si satisface las siguientes propiedad: Si para toda fórmula $\alpha$
+existe una fórmula $\beta$ tal que:
+\begin{enumerate}
+\item $\alpha \equiv \beta$
+\item Los conectivos de $\beta$ tienen que pertenecer al conjunto 
+$\{c_1, c_2, \dots, c_k\}$.
+\end{enumerate}
+\end{defn}
+
+\begin{exap}
+\begin{enumerate}[label=\emph{\alph*})]
+\item $\{\neg, \Rightarrow\}$ es adecuado. 
+
+$(\alpha \vee \beta) \equiv (\neg\alpha \Rightarrow \beta)$ y 
+$(\alpha \wedge \beta) \equiv \neg(\alpha \Rightarrow \neg\beta)$
+
+\item $\{\Rightarrow\}$ \textbf{no} es adecuado. Ejemplo de fórmulas
+$((P_1 \Rightarrow P_2) \Rightarrow P_2)$, 
+$(P_2 \Rightarrow (P_1 \Rightarrow P_3))$
+
+Sea $\alpha = (P_1 \wedge \neg P_1)$, $\alpha$ es contradicción. Veamos
+que $\alpha \not\equiv \beta$ para toda fórmula $\beta$ cuyo conectivo es
+$\Rightarrow$.
+
+Sea $v$ la valuación que manda todas las variables proposicionales al 1,
+$v(P_i) = 1\  \forall i$ entonces $v(\alpha) = 0$.
+
+Veamos que $v(\beta) = 1$ para toda fórmula de $\beta$ si $\Rightarrow$
+es el único conectivo que aparece en $\beta$.
+
+Por inducción en $c(\beta)$ = ``número de veces que aparece $\Rightarrow$
+en $\beta$''.
+
+\begin{itemize}
+\item Si $c(\beta) = 0$, $\beta = P_i$ ($P_i \in Var$) por hipótesis
+$v(\beta) = v(P_i) = 1$.
+
+\item Si $c(\beta) = n > 0$ entonces $\beta = (\beta_1 \Rightarrow \beta_2)$
+con $c(\beta_1) < n$ y $c(\beta_2) < n$. Por hipótesis inductiva
+$v(\beta_1) = 1$ y $v(\beta_2) = 1$. Luego $v(\beta) = 1$.
+\end{itemize}
+
+Luego $\{\Rightarrow\}$ no es adecuado.
+
+\begin{remk}
+La ``disyunción'' se puede expresar ``semanticamente'' usando solamente
+``$\Rightarrow$'', $(\alpha \vee \beta) \equiv 
+((\alpha \Rightarrow \beta) \Rightarrow \beta)$.
+\end{remk}
+
+\begin{prob}
+Caracterizar las funciones booleanas que provienen de una fórmula $\beta$
+en el que el único conectivo que aparece en $\beta$ es
+
+\begin{tabular}{c|c}
+$P_1$ & $P_1$ \\
+\hline
+0 & 0 \\
+1 & 1
+\end{tabular}
+
+\begin{tabular}{c|c}
+$P_1$ & $P_1 \Rightarrow P_1$ \\
+\hline
+0 & 1 \\
+1 & 1
+\end{tabular}
+
+\begin{tabular}{c|c|c}
+$P_1$ & $P_2$ & $(P_1 \Rightarrow P_2)$ \\
+\hline
+0 & 0 & 1\\
+1 & 0 & 0\\
+0 & 1 & 1\\
+1 & 1 & 1
+\end{tabular}
+
+\end{prob}
+
+\item $\{\vee, \wedge\}$ no es adecuado.
+
+Si $v$ es la valuación definida por $v(P_i) = 1\ \forall i$ entonces
+$v(\beta) = 1$ si $\beta \in F$ tal que $\text{conectivos}(\beta) 
+\subset \{\vee, \wedge\}$.
+
+$(P_1 \Rightarrow P_1)$ es tautología
+
+$(\alpha \Rightarrow \alpha)$ es tautología
+
+\begin{tabular}{c|c|c}
+$P_1$ & $P_2$ & $(P_1 \wedge (P_2 \vee P_1)) \equiv P_1$ \\
+\hline 
+0 & 0 & 0 \\
+0 & 1 & 0 \\
+1 & 0 & 1 \\
+1 & 1 & 1
+\end{tabular}
+
+Fijamos $n$ variables $P_1, P_2, \dots, P_n$ el número total de tablas 
+de verdad es $2^{2^n}$.
+
+Con 1 variable tenemos 4, $P_1$, $\neg P_1$, $(P_1 \vee \neg P_1)$,
+$(P_1 \wedge \neg P_1)$
+
+Con $\{\wedge, \vee\}$ $P_1$, $(P_1 \vee  P_1)$, $(P_1 \wedge P_1)$,
+$(P_1 \vee (P_1 \wedge P_1))$
+
+Con 2 variables $\{P_1, P_2\}$ ¿cuántas fórmulas no equivalentes se pueden
+construir con dos variables cuyos conectivos son $\{\wedge, \vee\}$.
+\end{enumerate}
+\end{exap}
+
+
+\end{document}
