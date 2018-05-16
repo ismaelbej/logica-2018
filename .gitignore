@@ -3,3 +3,6 @@
 *.pdf
 *.backup
 *.synctex.gz
+*~
+*.fls
+*.fdb_latexmk
