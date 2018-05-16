@@ -1,0 +1,207 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\ensuremath{\mathcal{F}}}
+\def\NN{\mathbb{N}}
+\def\FFa{\ensuremath{\mathcal{F}_{\alpha}}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Consecuencia Lógica}
+
+\begin{defn}[Satisfactibilidad]
+	Sea $\Gamma \in F$ y sea $v$ una valuación. Diremos que $v$ \textbf{satisface} a $\Gamma$
+	si $v(\alpha) = 1\ \forall\alpha \in \Gamma$.
+	
+	Diremos que $\Gamma$ es \textbf{satisfactible} si existe una valuación $v$ que satisface a $\Gamma$.
+\end{defn}
+
+\begin{remk}
+	Un conjunto $\Gamma$ se dice \textbf{insatisfactible} si no es satisfactible.
+\end{remk}
+
+\begin{exap}
+	\begin{enumerate}
+		\item $\Gamma = \{P_0, P_1\}$, 
+		
+		$\Gamma$ es satisfactible pues cualquier valuación $v$
+		tal que $v(P_0) = v(P_1) = 1$ satisface a $\Gamma$.
+		
+		\item $\Gamma = Var = \{P_0, P_1, \dots, P_n, \dots\}$,
+		
+		$\Gamma$ es satisfactible por una única valuación.
+		
+		\item $\Gamma = \{(P_0 \wedge \neg P_0)\}$, es insatisfactible.
+		
+		\item $\Gamma = \{P_0, \neg P_0\}$, es insatisfactible.
+		
+		\item $\Gamma = \{(P_0 \vee P_1), \neg P_0, \neg P_1\}$, es insatisfactible.
+	\end{enumerate}
+\end{exap}
+
+\begin{prop}
+	Sea $\Gamma \in F$.
+	
+	\begin{enumerate}
+		\item Si $\Gamma$ es satisfactible y $\Gamma' \subseteq \Gamma$ entonces 
+		$\Gamma'$ es satisfactible.
+		
+		\item Si $\Gamma$ es insatisfactible y $\Gamma \subseteq \Gamma'$ entonces 
+		$\Gamma'$ es insatisfactible.
+		
+		\item $\emptyset$ es satisfactible y $F$ es insatisfactible.
+	\end{enumerate}
+\end{prop}
+
+\begin{demo}
+	\begin{enumerate}
+		\item Sea $v$ una valuación que satisface a $\Gamma$. Veamos que $v$ satisface a 
+		$\Gamma'$. Sea $\alpha \in \Gamma'$ como $\Gamma' \subseteq \Gamma$ entonces
+		$\alpha \in \Gamma$ luego $v(\alpha) = 1$.
+		
+		\item y 3. son consecuencia de 1.
+	\end{enumerate}
+\end{demo}
+
+\begin{remk}
+	Si $v$ es una valuación cualquiera entonces $v$ satisface a $\emptyset$.
+\end{remk}
+
+\begin{defn}
+	Sea $\Gamma \subseteq F$ y $\alpha \in F$. Diremos que $\alpha$ es una 
+	\textbf{consecuencia lógica} de $\Gamma$ si verifica la siguiente condición:
+	
+	\begin{itemize}
+		\item Si $v$ es una valuación que satisface a $\Gamma$ entonces $v(\alpha) = 1$.
+	\end{itemize}
+\end{defn}
+
+\begin{notc}
+	$C(\Gamma)$ al conjunto de la fórmulas que son consecuencia lógica de $\Gamma$.
+\end{notc}
+
+\begin{exap}
+	\begin{enumerate}
+		\item $\Gamma = \{P_0, P_1\}$ y $\alpha = (P_0 \wedge P_1)$.
+		
+		\item $\Gamma = \{(P_0 \vee P_1), \neg P_0, \neg P_1\}$ y $\alpha = P_3$
+		
+		Si $\alpha \not\in C(\Gamma)$ entonces existiría una valuación $v$ que satisface a
+		$\Gamma$ pero $v(\alpha) = 0$. Esto es imposible pues $\Gamma$ es insatisfactible.
+		
+		\item En general si $\Gamma$ es insatisfactible $C(\Gamma) = F$.
+	\end{enumerate}
+\end{exap}
+
+\begin{teor}
+	Sea $\Gamma \subseteq F$. Las siguientes condiciones son equivalentes:
+	\begin{enumerate}
+		\item $\alpha \in C(\Gamma)$,
+		
+		\item $\Gamma \cup \{\neg\alpha\}$ es insatisfactible.
+	\end{enumerate}
+\end{teor}
+
+\begin{demo}
+	\begin{itemize}
+		\item $[1. \Rightarrow 2.]$ Sea $v$ una valuación y supongamos que por el absurdo
+		que $v$ satisface a $\Gamma \cup \{\neg\alpha\}$. En particular $v$ satisface a $\Gamma$,
+		como $v$ es consecuencia lógica de $\Gamma$ ($\alpha \in C(\Gamma)$), entonces
+		$v(\alpha) = 1$ luego $v(\neg\alpha) = 0$ lo que es un absurdo.
+		
+		Luego $\Gamma \cup \{\neg\alpha\}$ es insatisfactible.
+		
+		\item $[2. \Rightarrow 1.]$ Sea $v$ una valuación que satisface a $\Gamma$ veamos
+		que $v(\alpha) = 1$. Si $v(\alpha) = 0$ entonces $v(\neg\alpha) = 1$. En particular
+		$v$ satisface a $\Gamma \cup \{\neg\alpha\}$ lo que es imposible.
+	\end{itemize}
+\end{demo}
+
+\begin{remk}
+	\begin{enumerate}
+		\item Si $\alpha, \beta \in F$ entonces $\beta \in C(\{\alpha\})$ si y sólo si 
+		$(\alpha \Rightarrow \beta)$ es tautología.
+		
+		\item Si $\alpha_1, \alpha_2, \dots, \alpha_n, \beta \in F$ entonces 
+		$\beta \in C(\{\alpha_1, \alpha_2, \dots, \alpha_n\})$ si y sólo si 
+		$((\alpha_1 \wedge \alpha_2 \wedge \dots \wedge \alpha_n) \Rightarrow \beta)$ es
+		tautología.
+		
+		\item Si $\Gamma = Var = \{P_0, P_1, \dots, P_n, \dots\}$, $C(\Gamma) = \Gamma \cup 
+		\{(P_0 \wedge P_1)\} \cup \{((P_0 \wedge P_1) \wedge P_2)\}$.
+		
+		\item $C(\emptyset) = \text{tautología}$.
+		
+		\item $C(F) = F$.
+		
+		\item En general $\Gamma \subseteq C(\Gamma)$.
+	\end{enumerate}
+\end{remk}
+
+\section*{Teorema de compacidad}
+
+\begin{teor}
+	Si $\Gamma \subseteq$ y $\alpha \in C(\Gamma)$ entonces existe $\Gamma' \subseteq \Gamma$ tal que
+	$\alpha \in C(\Gamma')$ y $\Gamma'$ es finito.
+\end{teor}
+
+(Demostración técnica leer apunte en la página web de la materia)
+
+\begin{teor}
+	Las siguientes condiciones son equivalentes:
+	\begin{enumerate}
+		\item Teorema de Compacidad.
+		
+		\item Si $\Gamma$ es un conjunto insatisfactible entonces existe $\Gamma' \subseteq \Gamma$ 
+		finito e insatisfactible.
+	\end{enumerate}
+\end{teor}
+
+\begin{demo}
+	\begin{itemize}
+		\item $[1. \Rightarrow 2.]$ Como $\Gamma$ es insatisfactible entonces $C(\Gamma) = F$.
+		En particular $(P_1 \wedge \neg P_1) \in C(\Gamma)$ por 1. existe $\Gamma' \subseteq \Gamma$
+		tal que es finito y $(P_1 \wedge \neg P_1) \in C(\Gamma')$.  Como $(P_1 \wedge \neg P_1)$
+		es contradicción entonces $\Gamma'$ es insatisfactible.
+		
+		\item $[2. \Rightarrow 1.]$ Sea $\Gamma \subseteq F$ y sea $\alpha \in C(\Gamma)$.
+		Entonces $\Gamma \cup \{\neg\alpha\}$ es insatisfactible por 2. existe 
+		$\Gamma' \subseteq \Gamma \cup \{\neg\alpha\}$ tal que $\Gamma'$ es finito e
+		insatisfactible.
+		
+		Si $\neg\alpha \in \Gamma'$ entonces $\Gamma' \setminus \{\neg\alpha\} 
+		\subseteq \Gamma$ y $\Gamma' = (\Gamma' \setminus \{\neg\alpha\}) \cup \{\neg\alpha\}$.
+		Como $\Gamma'$ es insatisfactible entonces $\alpha \in C(\Gamma' \setminus \{\neg\alpha\})$
+		con $\Gamma' \setminus \{\neg\alpha\}$ finito.
+		
+		Si $\neg\alpha \not\in \Gamma'$ entonces $\Gamma' \subseteq \Gamma$. Como $\Gamma'$
+		es insatisfactible entonces $\Gamma' \cup \{\neg\alpha\}$ también es insatisfactible
+		lo que implica que $\alpha \in C(\Gamma')$ donde $\Gamma' \subseteq \Gamma$ y 
+		$\Gamma'$ es finito.
+	\end{itemize}
+\end{demo}
+
+\end{document}
