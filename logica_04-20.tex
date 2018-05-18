@@ -41,34 +41,38 @@ no fuera una contradicción existiría una valuación $v$ tal que $v(\alpha) = 1
 Entonces $v(\neg(P_1 \Rightarrow P_2)) = 1$ y $v(\neg(P_2 \Rightarrow P_1)) = 1$.
 Luego $v(P_1) = v(\neg P_2) = 1$ y $v(P_2) = v(\neg P_1) = 1$ lo que no es posible.
 
-\begin{forest}
-	[$\neg\alpha$ 
-		[$\neg(P_1 \Rightarrow P_2)$
-			[$\neg(P_2 \Rightarrow P_1)$
-				[$P_1$
-					[$\neg P_2$
-						[$P_2$
-							[$\neg P_1$]
+\begin{center}
+	\begin{forest}
+		[$\neg\alpha$
+			[$\neg(P_1 \Rightarrow P_2)$
+				[$\neg(P_2 \Rightarrow P_1)$
+					[$P_1$
+						[$\neg P_2$
+							[$P_2$
+								[$\neg P_1$]
+							]
 						]
 					]
 				]
 			]
 		]
-	]
-\end{forest}
+	\end{forest}
+\end{center}
 
 Construcción del árbol $\beta =  (P_1 \vee (P_2 \wedge \neg P_1))$.
 
-\begin{forest}
-	[$\beta$
-		[$P_1$]
-		[$(P_2 \wedge \neg P_1)$
-			[$P_2$ 
-				[$\neg P_1$]
+\begin{center}
+	\begin{forest}
+		[$\beta$
+			[$P_1$]
+			[$(P_2 \wedge \neg P_1)$
+				[$P_2$
+					[$\neg P_1$]
+				]
 			]
 		]
-	]
-\end{forest}
+	\end{forest}
+\end{center}
 
 \begin{prop}
 	Sea $\alpha$ una fórmula y sea $v$ una valuación. Entonces se verifican las siguientes condiciones:
@@ -108,35 +112,40 @@ Construcción del árbol $\beta =  (P_1 \vee (P_2 \wedge \neg P_1))$.
 
 \begin{exap}
 	\begin{itemize}
-		\item
-		\begin{forest}
-			[$a_0$
-				[$a_1$]
-				[$a_2$
-					[$a_3$]
-					[$a_4$
-						[$a_5$]
-						[$a_6$]
+		\item .
+
+		\begin{tabular}{p{6cm}p{6cm}}
+			{\begin{forest}
+				[$a_0$
+					[$a_1$]
+					[$a_2$
+						[$a_3$]
+						[$a_4$
+							[$a_5$]
+							[$a_6$]
+						]
 					]
 				]
-			]
-		\end{forest}
-		
-		\begin{align*}
-		a_0 &< a_1 & a_0 &< a_2 \\
-		a_2 &< a_3 & a_2 &< a_4 \\
-		a_4 &< a_5 & a_4 &< a_6
-		\end{align*}
+			\end{forest}}
+			&
+			{\begin{tabular}{cc}
+			$a_0 < a_1$ & $a_0 < a_2$ \\
+			$a_2 < a_3$ & $a_2 < a_4$ \\
+			$a_4 < a_5$ & $a_4 < a_6$
+			\end{tabular}}
+		\end{tabular}
 		
 		$\{x \in A : x \le a_4\} = \{a_4, a_0, a_2\}$ 
 		
-		\begin{forest}
-			[$a_0$
-				[$a_2$
-					[$a_4$]
+		\begin{center}
+			\begin{forest}
+				[$a_0$
+					[$a_2$
+						[$a_4$]
+					]
 				]
-			]
-		\end{forest}
+			\end{forest}
+		\end{center}
 		
 		\item Otro ejemplo $A = \NN$.
 		
@@ -174,20 +183,22 @@ Construcción del árbol $\beta =  (P_1 \vee (P_2 \wedge \neg P_1))$.
 
 Tomemos el siguiente árbol asociado a la fórmula $\neg((P_1 \Rightarrow P_2) \vee (P_2 \Rightarrow P_1))$
 
-\begin{forest}
-	[$\neg((P_1 \Rightarrow P_2) \vee (P_2 \Rightarrow P_1))$ 
-		[$\neg(P_1 \Rightarrow P_2)$
-			[$\neg(P_2 \Rightarrow P_1)$
-				[$P_1$
-					[$\neg P_2$
-						[$P_2$
-							[$\neg P_1$]
+\begin{center}
+	\begin{forest}
+		[$\neg((P_1 \Rightarrow P_2) \vee (P_2 \Rightarrow P_1))$
+			[$\neg(P_1 \Rightarrow P_2)$
+				[$\neg(P_2 \Rightarrow P_1)$
+					[$P_1$
+						[$\neg P_2$
+							[$P_2$
+								[$\neg P_1$]
+							]
 						]
 					]
 				]
 			]
 		]
-	]
-\end{forest}
+	\end{forest}
+\end{center}
 
 \end{document}
