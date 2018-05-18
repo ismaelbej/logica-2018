@@ -1,0 +1,268 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd,forest,multicol}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\ensuremath{\mathcal{F}}}
+\def\NN{\mathbb{N}}
+\def\FFa{\ensuremath{\mathcal{F}_{\alpha}}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Árboles de refutación}
+
+\begin{multicols}{2}
+	\begin{enumerate}
+		\item $R_{\lnot} = \dfrac{\lnot\lnot\alpha}{\alpha}$
+		
+		\item $R_{\lnot\vee} = \dfrac{\lnot(\alpha \vee \beta)}{\lnot\alpha , \lnot\beta}$
+		
+		\item $R_{\wedge} = \dfrac{\alpha \wedge \beta}{\alpha , \beta}$
+		
+		\item $R_{\lnot\Rightarrow} = \dfrac{\lnot(\alpha \Rightarrow \beta)}{\alpha , \lnot\beta}$
+		
+		\item $R_{\vee} = \dfrac{(\alpha \vee \beta)}{\alpha \mathop{|} \beta}$
+		
+		\item $R_{\lnot\wedge} = \dfrac{\lnot(\alpha \wedge \beta)}{\lnot\alpha \mathop{|} \lnot\beta}$
+		
+		\item $R_{\Rightarrow} = \dfrac{(\alpha \Rightarrow \beta)}{\lnot\alpha \mathop{|} \beta}$
+		
+		\item[]
+	\end{enumerate}
+\end{multicols}
+
+\begin{defn}
+	Sea $A$ un árbol cuyos elementos son fórmulas. Diremos que un árbol $B$ es una \textbf{extensión inmediata} 
+	de $A$ si se verifica las siguientes condiciones:
+	
+	Si $T$ es un nodo terminal de $A$ y $\alpha$ es un antecesor de $T$ que no es una variable proposicional
+	y tampoco la negación de una variable proposicional se tienen dos casos:
+	
+	\begin{enumerate}
+		\item $\alpha$ es una fórmula del tipo 1., 2., 3. ó 4. se agrega como nuevo nodo terminal $\beta$
+		si es 1. ó se agrega cualquiera de las conclusiones
+		
+		\begin{forest}
+			[$\alpha$
+				[$\cdot$]
+				[$\alpha$ 
+					[$\alpha$
+						[$\beta$,edge=dotted]
+					]
+					[$\cdot$]
+				]
+				[$\cdot$]
+			]
+		\end{forest}
+		
+		\item Si $\alpha$ es del tipo 5., 6. ó 7. se agregan como nuevos terminales las dos conclusiones
+		de las reglas.
+		
+		\begin{forest}
+			[$\cdot$
+				[$\cdot$]
+				[$\cdot$ 
+					[$\cdot$
+						[$\alpha_1$,edge=dotted]
+						[$\alpha_2$,edge=dotted]
+					]
+					[$\cdot$]
+				]
+				[$\cdot$]
+			]
+		\end{forest}
+	\end{enumerate}
+\end{defn}
+
+\begin{defn}
+	Sea $\alpha$ una fórmula. Un \textbf{árbol de refutación} de $\alpha$ es un árbol $A$ que se obtiene a partir
+	del árbol $A_0$ cuyo único nodo es $\alpha$ tal que $A = A_n$ y $A_j$ es una extensión inmediata de 
+	$A_{j-1}\ \forall j \in \{1, 2, \dots, n\}$
+	
+	\[
+		A_0 = \{\alpha\} \subseteq A_1 \subseteq \dots \subseteq A_n = A
+	\]
+\end{defn}
+
+\begin{exap}
+	\begin{enumerate}
+		\item $\alpha = (P_1 \Rightarrow (P_2 \Rightarrow \lnot\lnot P_3))$ $A = \{\alpha\}$
+		
+		\item $\alpha$ como en 1. $A$ es el siguiente árbol
+		
+		\begin{forest}
+			[$\alpha$
+				[$\lnot P_1$]
+				[$(P_1 \Rightarrow P_2)$]
+			]
+		\end{forest}
+		
+		\item.
+		
+		\begin{forest}
+			[$\alpha$
+				[$\lnot P_1$]
+				[$(P_1 \Rightarrow P_2)$
+					[$\lnot P_1$]
+					[$P_2$]
+				]
+			]
+		\end{forest}
+
+		\item.
+		
+		\begin{forest}
+			[$\alpha$
+				[$\lnot P_1$]
+				[$(P_1 \Rightarrow P_2)$
+					[$\lnot P_1$
+						[$\lnot P_1$]
+						[$P_2$]
+					]
+					[$P_2$]
+				]
+			]
+		\end{forest}
+	\end{enumerate}
+\end{exap}
+
+\begin{defn}
+	Si $A$ es un árbol una \textbf{rama} $R$ es un subconjunto de $A$ que verifica las siguientes condiciones:
+	
+	\begin{enumerate}
+		\item $R$ es totalmente ordenado con el orden heredado de $A$.
+		
+		\item Si $R \subseteq S$ y $S$ es totalmente ordenado entonces $S = R$. Es decir $R$ es un conjunto
+		totalmente ordenado y maximal
+	\end{enumerate}
+\end{defn}
+
+\begin{defn}
+	Un conjunto $S$ de fórmulas se dice \textbf{saturado} si verifica las siguientes condiciones:
+	
+	\begin{enumerate}
+		\item Si $\alpha \in F$ entonces $\alpha \not\in S$ ó $\lnot\alpha \not\in S$.
+		
+		\item 
+			\begin{enumerate}
+				\item 
+				Si $\alpha$ es una fórmula que es premisa de las reglas 1., 2., 3. ó 4. las dos conclusiones
+				de las reglas 2., 3. y 4. deben perteneder a $S$ si las premisas estan en $S$ y 
+				$\lnot\lnot\alpha \in S$ entonces $\alpha \in S$.
+				
+				\item Si $\alpha$ es una fórmula en $S$ que es premisa de las reglas 5., 6. ó 7. algunas
+				de sus conclusiones debe estar en $S$.
+			\end{enumerate}
+	\end{enumerate}
+\end{defn}
+
+\begin{exap}
+	\begin{itemize}
+		\item Si $(\alpha \vee \beta) \in S$ entonces $\alpha \in S$ ó $\beta \in S$.
+		
+		\item Si $(\alpha \wedge \beta) \in S$ entonces $\alpha \in S$ y $\beta \in S$.
+		
+		\item Si $\lnot(P_1 \Rightarrow \lnot\lnot P_2) \in S$ entonces $P_1 \in S$ y $\lnot\lnot\lnot P_2 \in S$,
+		$P_1  \in S$ y $\lnot P_2 \in S$.
+	\end{itemize}
+\end{exap}
+
+\begin{prop}
+	Si $S$ es un conjunto saturado de fórmulas entonces $S$ es satisfactible.
+\end{prop}
+
+\begin{demo}
+	Sea $v$ la valuación dada por la siguiente fórmula: 
+	
+	Sea $P_n \in Var$
+	
+	\[
+		v(P_N) = \begin{cases}
+			1 & \text{si } P_n \in S \\
+			0 & \text{si } P_n \not\in S
+		\end{cases}
+	\]
+	
+	Veamos que $v(\alpha) = 1\ \forall \alpha \in S$.
+	
+	Usaremos inducción en $cb(\alpha)$ ``complejidad binaria de $\alpha$''.
+	
+	\begin{itemize}
+		\item Si $cb(\alpha) = 0$, $\alpha$ es del tipo 
+		$\alpha = \underbrace{\lnot\lnot\dots\lnot}_{n \text{veces}} P_i$ con $P_i \in Var$.
+		
+		Si $n$ es par entonces $P_i \in S$ pues $S$ es saturado. Luego $v(\alpha) = v(P_i) = 1$.
+		
+		Si $n$ es impar $\lnot P_i \in S$ pues $S$ es saturado. Luego $v(\alpha) = 
+		v(\lnot P_i) = 1 - v(P_i) = 1 - 0 = 1$ pues $P_i \not\in S$.
+		
+		\item Sea $n = cb(\alpha)$ con $n > 0$, supongamos que $v(\beta) = 1\ \forall \beta \in S$
+		si $cb(\beta) < n$.
+		
+		Si $\alpha = \underbrace{\lnot\lnot\dots\lnot}_{n\text{ veces}} \beta$
+		
+		Si $n$ es par entonces $\beta \in S$. Hay tres casos posibles.
+		
+		\begin{enumerate}[label=\emph{\alph*})]
+			\item $\beta = (\alpha_1 \Rightarrow \alpha_2)$
+
+			\item $\beta = (\alpha_1 \wedge \alpha_2)$
+
+			\item $\beta = (\alpha_1 \vee \alpha_2)$
+		\end{enumerate}
+		
+		Si ocurre c) entonces $\alpha_1 \in S$ ó $\alpha_2 \in S$ pues $S$ es saturado
+		por la hipótesis inductiva $v(\alpha_1) = 1$ ó $v(\alpha_2) = 1$ y luego $v(\beta) = 1$.
+		
+		Si ocurre b) la prueba es análoga.
+		
+		Si ocurre a) entonces $\lnot \alpha_1 \in S$ ó $\alpha_2 \in S$. Por hipótesis inductiva
+		$v(\lnot \alpha_1) = 1$ ó $v(\alpha_2) = 1$ lo que implica $v(\beta) = 1$.
+		
+		Si $n$ es impar $\lnot \beta \in S$ y hay tres casos:
+		
+		\begin{enumerate}[label=\emph{\alph*})]
+			\item $\lnot\beta = \lnot(\alpha_1 \Rightarrow \alpha_2)$
+			
+			\item $\lnot\beta = \lnot(\alpha_1 \wedge \alpha_2)$
+			
+			\item $\lnot\beta = \lnot(\alpha_1 \vee \alpha_2)$
+		\end{enumerate}
+		
+		En forma análoga se prueba que $v(\beta) = 1$.
+	\end{itemize}
+\end{demo}
+
+\begin{defn}
+	Sea $\alpha \in F$ y sea $A$ un árbol de refutación de $\alpha$ $R$ es una rama de $A$.
+	
+	Diremos que $R$ es \textbf{cerrada} si existe $\beta \in F$ tal que $\beta \in R$ y 
+	$\lnot\beta \in R$
+	
+	Diremos que $R$ es \textbf{saturado} si $R$ es un conjunto saturado de fórmulas.
+	
+	Diremos que $A$ es \textbf{completo} si toda rama de $A$ es cerrada ó saturada.
+\end{defn}
+
+\end{document}
