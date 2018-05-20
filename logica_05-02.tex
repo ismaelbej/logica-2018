@@ -1,0 +1,223 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd,forest,multicol}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\ensuremath{\mathcal{F}}}
+\def\NN{\mathbb{N}}
+\def\FFa{\ensuremath{\mathcal{F}_{\alpha}}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Teorema de Completitud}
+
+\begin{defn}
+    Si $\Gamma \subseteq F$ y $\alpha \in F$ diremos que $\alpha$ es \textbf{deducible}
+    a partir de $\Gamma$ si existen $\gamma_1, \gamma_2, \dots, \gamma_n \in \Gamma$ y
+    un árbol de refutación $A$ cerrado de $\{\gamma_1, \gamma_2, \dots, \gamma_n, \lnot\alpha\}$.
+\end{defn}
+
+\begin{notc}
+    Escribimos $D(\Gamma)$ al conjunto de fórmulas que son deducibles de $\Gamma$.
+\end{notc}
+
+\begin{teor}[Teorema de Completitud]
+    Si $\Gamma \subseteq F$ entonces $D(\Gamma) = C(\Gamma)$.
+\end{teor}
+
+\begin{demo}
+    \begin{itemize}
+        \item[]
+        
+        \item[] $[\subseteq]$ Sea $\alpha \in D(\Gamma)$, luego existen 
+        $\gamma_1, \gamma_2, \dots, \gamma_n \in \Gamma$ y un árbol de refutación $A$ cerrado de 
+        $(\gamma_1 \land \gamma_2 \land \dots \land \gamma_n \land \lnot \alpha)$.
+        Luego $(\gamma_1 \land \gamma_2 \land \dots \land \gamma_n \land \lnot \alpha)$ es
+        insatisfactible.
+        
+        Veamos que $\alpha \in C(\Gamma)$.
+        
+        Sea $v$ una valuación que satisface a $\Gamma$. En particular $v(\gamma_1) = v(\gamma_2) 
+        = \dots = v(\gamma_n) = 1$. Luego $v(\lnot\alpha) = 0$ y por ende $v(\alpha) = 1$.
+        
+        \item[] $[\supseteq]$ Sea $\alpha \in C(\Gamma)$. Por el Teorema de Compacidad existe
+        $\Gamma' \subseteq \Gamma$ tal que $\Gamma'$ es finito y $\alpha \in C(\Gamma')$. 
+        Escribimos $\Gamma' = \{\beta_1, \beta_2, \ldots, \beta_k\}$. Luego 
+        $\{\beta_1, \beta_2, \ldots, \beta_k, \lnot\alpha\}$ es insatisfactible. 
+        Sea $A$ un árbol de refutación completo de $(\beta_1 \land \beta_2 \land \ldots \land 
+        \beta_k \land \lnot\alpha)$. Luego $A$ es cerrado y entonces $\alpha \in D(\Gamma)$.
+    \end{itemize}
+\end{demo}
+
+\section{Lógica de primer orden - Cálculo de predicados}
+
+\begin{exap}
+    \begin{enumerate}
+        \item[]
+        
+        \item $\forall x \forall y x < y$.
+        
+        \item $\forall x \forall y \mathcal{F}(x) = \mathcal{F}(y) \Rightarrow x = y$.
+        
+        \item $\forall x x + 0 = x$.
+    \end{enumerate}
+\end{exap}
+
+\begin{defn}
+    Un alfabeto de la lógica de primer orden consiste de las siguientes símbolos:
+    
+    \begin{enumerate}
+        \item Un conjunto $Var = \{x_0, x_1, \dots, x_n, \dots\}$ infinito numerable cuyos
+        elementos se denominan variables.
+        
+        \item Dos paréntesis: $\{(,)\}$.
+        
+        \item Conectivos: $\{\lnot, \lor, \land, \Rightarrow, \forall, \exists \}$. 
+        $\forall$: Cuantificador universal, $\exists$: Cuantificador existencial.
+        
+        \item Un conjunto $\mathcal C$ de símbolos denominados símbolos de constante. 
+        ($\mathcal C$ pueder ser vacío.)
+        
+        \item Un conjunto $\mathcal F$ de símbolos de función dados por la siguiente regla
+        $\mathcal F = \bigcup_{n=1}^{\infty} \mathcal F_n$ donde los elementos de $\mathcal F_n$
+        se denominan símbolos de función $n$-arios. ($\mathcal F$ puede ser vacío.)
+        
+        \item Un conjunto $\mathcal P$ no vacío de símbolos de predicado dado por la 
+        siguiente regla: $\mathcal P = \bigcup_{n=1}^{\infty} \mathcal P_n$ donde los elementos de
+        $\mathcal P_n$ se denominan símbolos de predicado ó relaciones $n$-arios.
+    \end{enumerate}
+\end{defn}
+
+\begin{defn}
+    Sea $A$ un alfabeto dado como en la definición 1. Un \textbf{término} es una expresión
+    sobre $A$ que se define inductivamente como sigue:
+    
+    \begin{enumerate}[label=\emph{\alph*})]
+        \item Las variables $x_0, x_1, \dots, x_n, \dots$ son términos.
+        
+        \item Si $c \in \mathcal C$, $c$ es un término.
+        
+        \item Si $\mathcal F \in \mathcal F_n$ y $t_1, t_2, \dots, t_n$ son términos, entonces
+        $\mathcal F\,t_1\,t_2\,\dots\,t_n$ es un término.
+        
+        \item En general una expresión $t$ es término si se obtiene en un número finito de pasos
+        por medio de a), b) y c).
+    \end{enumerate}
+\end{defn}
+
+\begin{defn}
+    Sea $A$ un alfabeto dado como en la definición 1. Una \textbf{fórmula} es una expresión sobre $A$
+    que se define inductivamente como sigue:
+    
+    \begin{enumerate}[label=\emph{\alph*})]
+        \item Si $\mathcal P \in \mathcal P_n$ y $t_1, t_2, \dots, t_n$ son términos entonces
+        $\mathcal P\,t_1\,t_2\,\dots\,t_n$ es una fórmula denominada \textbf{fórmula atómica}.
+        
+        \item Si $\alpha$ es fórmula entonces $\lnot\alpha$ es fórmula.
+        
+        \item Si $\alpha$ y $\beta$ son fórmulas y $\star \in \{\lor, \land, \Rightarrow\}$
+        entonces $(\alpha \star \beta)$ es fórmula.
+        
+        \item Si $x_i \in Var$ y $\alpha$ es fórmula entonces $\forall x_i\,\alpha$ y $\exists x_i\,\alpha$
+        son fórmulas.
+        
+        \item Una expresión $\alpha$ es fórmula si se obtiene en un número finito de
+        pasos usandos las reglas a), b), c) y d)
+    \end{enumerate}
+\end{defn}
+
+\begin{notc}
+    Notaremos con $Term$ al conjunto de los términos y $Form$ al conjunto de las fórmulas.
+\end{notc}
+
+\begin{defn}
+    Un lenguaje de \textbf{primer orden} sobre un alfabeto donde según la definición 1 es
+    $\mathcal L = Term \cup Form$
+\end{defn}
+
+\begin{exap}
+    \begin{enumerate}
+        \item ``Existe una función continua pero no derivable'' pertenece a lenguaje de órden superior.
+        
+        \item Sea $\mathcal L$ un lenguaje de primer orden cuyo alfabeto consiste de 
+        un símbolo de constante $c$ y un símbolo de función unario $\mathcal F$
+        
+        \begin{enumerate}
+            \item $c$
+            \item $\mathcal F\,c$.
+            \item $\mathcal F\mathcal F\,c$, $\underbrace{\mathcal F\mathcal F\dots \mathcal F}_{k \text{ veces}}\,c$.
+            \item $\mathcal F\mathcal F\,x_3$ es un término, $\mathcal F\,x_3\,x_4$ no es un término.
+        \end{enumerate}
+        
+        \item Ejemplos de fórmulas con símbolo de predicado. Usamos el siguiente símbolo 
+        de predicado binario $\mathcal P$
+        
+        \begin{enumerate}
+            \item $\mathcal P\,c\,\mathcal Fc$ (fórmula atómica), si $\mathcal P$ es el 
+            predicado de igualdad esto equivale a $c = \mathcal F c$
+            
+            \item $\forall x_1 \mathcal P\,c\,\mathcal F\,c$,\quad $\exists x_1\,x_1 = 2$,\quad $\exists x_1\,1 = 2$
+            
+            \item $\forall x_1 \exists x_2 \exists x_3 \forall x_4\,\mathcal P\,x_1\,\mathcal F\,x_5$
+        \end{enumerate}
+    \end{enumerate}
+\end{exap}
+
+\begin{defn}
+    Sea $\mathcal L$ un lenguaje de primer orden. Sea $\alpha$ una fórmula de $\mathcal L$ 
+    y sea $x_j$ una variable. Diremos que $x_j$ aparece \textbf{libre} en $\alpha$ 
+    de acuerdo a la siguiente definición inductiva:
+    
+    \begin{enumerate}
+        \item Si $\alpha$ es una fórmula atómica $\alpha = \mathcal P t_1 t_2 \dots t_n$
+        donde $\mathcal P \in \mathcal P_n$ y $t_1, t_2, \dots, t_n$ son términos $x_j$.
+        $x_j$ aparece libre en $\alpha$ si $x_j$ aparece como símbolo en $\alpha$.
+        
+        \item Si $\alpha = \lnot\beta$ con $\beta \in Form$ $x_j$ aparece libre en $\alpha$ 
+        si y sólo si $x_j$ aparece libre en $\beta$.
+        
+        \item Si $\alpha = (\beta_1 \star \beta_2)$ con $\beta_1, \beta_2 \in Form$ y 
+        $\star \in \{\lor, \land, \Rightarrow\}$. $x_j$ aparece libre en $\alpha$
+        si y sólo si $x_j$ aparece libre en $\beta_1$ ó $x_j$ aparece libre en $\beta_2$.
+        
+        \item Si $\alpha = \forall x_k \beta$ ó $\alpha = \exists x_k \beta$, $x_j$
+        aparece libre en $\alpha$ si y sólo si $x_j \neq x_k$ y $x_j$ aparece libre en $\beta$.
+    \end{enumerate}
+    
+    Una aparición de $x_j$ en una fórmula $\alpha$ que no es libre se dice \textbf{ligada}.
+    
+    Un \textbf{enunciado} es una fórmula sin apariciones libres.
+\end{defn}
+
+\begin{exap}
+    \begin{enumerate}
+        \item[]
+        
+        \item $\alpha = \forall x_1 \mathcal P x_1 x _2$ con $\mathcal P \in \mathcal P_2$,
+        $x_1$ es ligada en $\alpha$, $x_2$ es libre en $\alpha$.
+        
+        \item $\exists x_2\,\forall x_1\,\mathcal P\,x_1\,x_2$, es un enunciado.
+    \end{enumerate}
+\end{exap}
+\end{document}
