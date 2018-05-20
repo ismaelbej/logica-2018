@@ -1,0 +1,289 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd,forest,multicol}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\ensuremath{\mathcal{F}}}
+\def\NN{\mathbb{N}}
+\def\FFa{\ensuremath{\mathcal{F}_{\alpha}}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Árboles de refutación}
+
+\begin{prop}
+  Toda fórmula $\alpha \in F$ admite un árbol de refutación completo (es decir toda rama
+  es cerrada o saturada).
+\end{prop}
+
+\begin{exap}
+ $\alpha = ((P_1 \Rightarrow P_2) \lor (P_3 \land \lnot P_3))$
+ 
+ \begin{center}
+  \begin{forest}
+    [$\alpha$
+      [$(P_1 \Rightarrow P_2)$
+	[$\lnot P_1$]
+	[$P_2$]
+      ]
+      [$(P_3 \land \lnot P_3)$
+	[$P_3$
+	  [$\lnot P_3$]
+	]
+      ]
+    ]
+  \end{forest}
+ \end{center}
+\end{exap}
+
+\begin{demo}[Proposición]
+ Usamos inducción en la complejidad binaria de $\alpha$. Sea $cb(\alpha) = n$
+ 
+ \begin{itemize}
+  \item Si $n = 0$, $\alpha = \underbrace{\lnot\lnot\dots\lnot}_{k \text{ veces}} P_i$, $P_i \in Var$.
+  
+  Si $k$ es par un árbol completo es 
+  
+  \begin{center}
+   \begin{forest}
+    [$\alpha$
+      [$\underbrace{\lnot\lnot\dots\lnot}_{k-2} P_i$
+	[$P_i$]
+      ]
+    ]
+   \end{forest}
+  \end{center}
+
+  Similarmente si $k$ es impar el nodo terminal es $\lnot P_i$.
+  
+  \item Supongamos que $n > 0$, $\alpha = \underbrace{\lnot\lnot\dots\lnot}_{k \text{ veces}}\beta$
+
+  \begin{enumerate}[label=\emph{\alph*})]
+   \item $\beta = (\alpha_1 \lor \alpha_2)$
+   
+   \item $\beta = (\alpha_1 \land \alpha_2)$
+   
+   \item $\beta = (\alpha_2 \Rightarrow \alpha_2)$
+  \end{enumerate}
+
+  Si $k$ es par se comienza la construcción con 
+  
+  \begin{center}
+   \begin{forest}
+    [$\alpha$
+      [$\underbrace{\lnot\lnot\dots\lnot}_{k-2}\beta$
+	[$\beta$]
+      ]
+    ]
+   \end{forest}
+  \end{center}
+  
+  Y tenemos
+
+  \begin{center}
+    a)
+    \begin{forest} baseline
+      [$\cdot$
+	[$\beta$
+	  [$\alpha_1$]
+	  [$\alpha_2$]
+	]
+      ]
+    \end{forest}
+    \quad\quad\quad
+    c)
+    \begin{forest} baseline
+      [$\cdot$
+	[$\beta$
+	  [$\alpha_1$]
+	  [$\alpha_2$]
+	]
+      ]
+    \end{forest}
+  \end{center}
+  En los casos a) y c) $cb(\alpha_1) < n$ y $cb(\alpha_2) < n$ por hipótesis inductiva
+  $\alpha_1$ y $\alpha_2$ admiten dos árboles $A_1$ y $A_2$ de refutación completa.
+  
+  Sea $A$ el siguiente árbol
+  
+  \begin{center}
+   \begin{forest}
+    [$\alpha$
+      [$\dots$
+	[$\beta$
+	  [$\alpha_1$
+	    [$A_1$,draw]
+	  ]
+	  [$\alpha_2$
+	    [$A_2$,draw]
+	  ]
+	]
+      ]
+    ]
+   \end{forest}
+  \end{center}
+
+  Sea $R$ una rama de $A$. Si $R$ es cerrada no hay nada que probar. Si $R$ es abierta
+  hay que probar que $R$ es saturada.
+  
+  Si $\gamma \in R$ hay cuatro casos posibles:
+  
+  \begin{enumerate}
+   \item $\gamma = \underbrace{\lnot\lnot\dots\lnot}_{k\text{ veces}}\beta$
+   
+   \item $\gamma = \underbrace{\lnot\lnot\dots\lnot}_{j\text{ veces}}\beta$ con $j < k$ y $j$ par
+   
+   \item $\gamma = \beta = (\alpha_1 \lor \alpha_2)$
+   
+   \item $\gamma \in R \cap A_1$ ó $\gamma \in R \cap A_2$
+  \end{enumerate}
+
+  Si ocurre 1., 2. ó 3. la única conclusión de $\gamma$ pertenece a $R$.
+  
+  Si ocurre 4. por hipótesis inductiva la conclusión ó conclusiones de $\gamma$
+  pertenecen a $R$.
+  
+  En el caso c) se prueba análogamente.
+  
+  Para el caso b) realizamos la siguiente construcción
+
+  \begin{center}
+   \begin{forest}
+    [$\alpha$
+      [$\dots$
+	[$\beta$
+	  [$\alpha_1$,tikz={\node [draw,fit=()(!2)(!1)] {};}
+	    [$\cdot$
+	      [$A_2$,draw] {node[anchor=east,align=center]{hola};}
+	    ]
+	    [$\cdot$
+	      [$A_2$,draw]
+	    ]
+	  ]
+	]
+      ]
+    ]
+   \end{forest}
+  \end{center}
+
+  En cada nodo terminal de $A_1$ agregamos un nuevo nodo terminal $\alpha_2$ y a
+  continuación incorporamos el árbol $A_2$.
+  
+  Sea $R$ es una rama abierta de este árbol y $\gamma \in R$.
+  
+  Hay cuatro casos:
+  
+  \begin{enumerate}
+   \item $\gamma = \alpha$
+   
+   \item $\gamma = \underbrace{\lnot\lnot\dots\lnot}_{j \text{ veces}}\beta$, con $j$ par y $j < k$
+   
+   \item $\gamma = (\alpha_1 \land \alpha_2)$
+   
+   \item $\gamma \in R \cap A_1$ ó $\gamma \in R \cap A_2$ pero $\gamma \not\in A_1$
+  \end{enumerate}
+  
+  Al igual que los casos a) y c) se demuestra que las conclusiones de $\gamma$ ó una
+  de sus conclusiones pertenece a $R$.
+  
+  Si $k$ es impar la demostración es análoga. 
+ \end{itemize}
+\end{demo}
+
+\begin{prop}
+ Si $\alpha$ es una fórmula satisfactible entonces todo árbol de refutación de $\alpha$
+ tiene una rama abierta.
+\end{prop}
+
+\begin{demo}
+ (Ejercicio)
+\end{demo}
+
+\begin{remk}
+ $\alpha$ es satisfactible si y sólo si $\alpha$ no es contradicción.
+\end{remk}
+
+\begin{remk}
+ Si $v$ es una valuación que satisface a $\alpha$ entonces $v$ satisface a $R$ siendo
+ $R$ una rama abierta de cualquier árbol de $\alpha$.
+\end{remk}
+
+\begin{coro}
+ Sea $\alpha \in F$ las siguientes condiciones son equivalentes:
+ 
+ \begin{enumerate}
+  \item $\alpha$ es satisfactible
+  
+  \item Todo árbol de refutación de $\alpha$ tiene una rama abierta
+  
+  \item Existe un árbol de refutación completo de $\alpha$ con una rama abierta
+ \end{enumerate}
+\end{coro}
+
+\begin{demo}
+ \begin{itemize}
+  \item[]
+  
+  \item[] $[1. \Rightarrow 2.]$ Es la proposición.
+  
+  \item[] $[2. \Rightarrow 3.]$ Vimos que toda fórmula $\alpha$ admite un árbol de
+  refutación completo y por 2. se deduce 3.
+  
+  \item[] $[3. \Rightarrow 1.]$ Sea $R$ una rama abierta de un árbol de refutación completo de
+  $\alpha$. Como es completo $R$ es saturada y $\alpha \in R$ como $R$ es satisfactible
+  en particular $\alpha$ es satisfactible.
+ \end{itemize}
+\end{demo}
+
+\begin{coro}
+ Sea $\alpha \in F$ las siguientes condiciones son equivalentes
+ 
+ \begin{enumerate}
+  \item $\alpha$ es contradicción
+  
+  \item Existe un árbol de refutación de $\alpha$ con todas sus ramas cerradas.
+  
+  \item Todo árbol de refutación completo tiene todas sus ramas cerradas.
+ \end{enumerate}
+\end{coro}
+
+\begin{remk}
+ El método de los árboles se puede generalizar a un conjunto finito de fórmulas.
+ Si $S = \{\alpha_1, \alpha_2, \dots, \alpha_n\}$. $S$ es satisfactible si y sólo si
+ $(\alpha_1 \land \alpha_2 \land \dots \land \alpha_n)$ es satisfactible.
+\end{remk}
+
+\begin{defn}
+ Si $\Gamma \subseteq F$ y $\alpha \in F$. Diremos que $\alpha$ es deducible de $\Gamma$
+ y escribimos $\Gamma \vdash \alpha$ si existen $\gamma_1, \gamma_2, \dots, \gamma_n \in \Gamma$
+ tales que $\{\gamma_1, \gamma_2, \dots, \gamma_n, \lnot \alpha\}$ es insatisfactible
+ ó equivalentemente $(\gamma_1 \land \gamma_2 \land \dots \land \gamma_1 \land \lnot \alpha)$
+ es una contradicción.
+\end{defn}
+
+\begin{teor}[Teorema de Completitud]
+ $\Gamma \vdash \alpha \iff \alpha \in C(\Gamma)$
+\end{teor}
+
+\end{document}
