@@ -1,0 +1,204 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd,forest,multicol}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\ensuremath{\mathcal{F}}}
+\def\NN{\mathbb{N}}
+\def\FFa{\ensuremath{\mathcal{F}_{\alpha}}}
+\def\LL{\ensuremath{\mathcal{L}}}
+\def\PP{\ensuremath{\mathcal{P}}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Sustitución de variables}
+
+\begin{defn}
+    Sea $\LL$ un lenguaje de primer orden y sea $t$ un término de $\LL$.
+    Si $x_i$ es una variable y $S$ un término arbitrario de $\LL$.
+    
+    Definimos inductivamente el siguiente término $t(x_i/S)$ 
+    ``Sustituir en el término $t$ la variable $x_i$ por $S$''.
+    
+    Tenemos los siguientes casos:
+    
+    \begin{enumerate}[label=\emph{\alph*})]
+        \item Si $t$ es una variable.
+        
+        Si $t = x_i$, $t(x_i/S) = S$. 
+        
+        Si $t \neq x_i$, $t(x_i/S) = t$.
+        
+        \item Si $t$ es un símbolo de constante 
+        
+        $t(x_i/S) = t$.
+        
+        \item Si $t = \mathcal F\,t_1\,t_2\,\dots\,t_n$ con $\mathcal F$ un símbolo de 
+        función $n$-ario y $t_1, t_2, \dots, t_n$ términos.
+        
+        $t(x_i/S) = \mathcal F\, t_1(x_i/s)\, t_2(x_i/S)\,\dots\,t_n(x_i/S)$.
+    \end{enumerate}
+\end{defn}
+
+\begin{remk}
+    Sea $\alpha = \exists x_1\, x_1 = x_2$, $x_1$ es variable ligada y $x_2$ es variable libre.
+    
+    $\alpha(x_1/c) = \exists c\,c=x_2$ (no es fórmula, no se puede cuantificar una constante)
+    
+    Sea $\beta = \exists x_1\,\lnot x_1 = x_2$, ``$\exists x_1\,x_1 \neq x_2$''
+    
+    $\beta(x_2/x_1) =  \exists x_1\,\lnot x_1 = x_1$
+    
+    $\beta(x_2/c) = \exists x_1\,\lnot x_1 = c$
+\end{remk}
+
+\begin{defn}
+    Sea $\LL$ un lenguaje de primer orden y sea $\alpha$ una fórmula. Si $x_i$ es una variable
+    libre de $\alpha$ y $S$ un término sin variables definimos inductivamente la siguiente expresión:
+    
+    $\alpha(x_i/S)$ ``Sustituir en $\alpha$ la variable $x_i$ por el término $S$'' como sigue:
+    
+    \begin{enumerate}[label=\emph{\alph*})]
+        \item $\alpha$ es una fórmula atómica $\alpha = \mathcal P\,t_1\,t_2\,\dots\,t_n$ con
+        $\mathcal P$ un símbolo de predicado $n$-ario, y $t_1, t_2, \dots, t_n$ términos.
+        
+        $\alpha(x_i/S) = \mathcal P\,t_1(x_i/S)\,t_2(x_i/S)\,\dots\,t_n(x_i/S)$
+        
+        \item Si $\alpha = \lnot\beta$ con $\beta \in Form$
+        
+        $\alpha(x_i/S) = \lnot\beta(x_i/S)$
+        
+        \item Si $\alpha = (\beta_1 \star \beta_2)$ con $\beta_1, \beta_2 \in Form$ y 
+        $\star \in \{\lor, \land, \Rightarrow\}$
+        
+        $\alpha(x_i/S) = (\beta_1(x_i/S) \star \beta_2(x_i/S))$
+        
+        \item Si $\alpha = \exists x_j\,\beta$ ó $\alpha = \forall x_j\,\beta$, 
+        $x_i$ debe aparecer libre en $\beta$.
+        
+        $\alpha(x_i/S) = \exists x_j\,\beta(x_i/S)$ ó $\alpha(x_i/S) = \forall x_j\,\beta(x_i/S)$
+    \end{enumerate}
+\end{defn}
+
+\begin{remk}
+    Si $x_i$ es variable ligada en $\alpha$ entonces $\alpha(x_i/S) = \alpha$.
+\end{remk}
+
+\begin{exap}
+    $\alpha = (\underbrace{\exists x_1\,x_1 = x_1}_{\beta_1} \Rightarrow 
+    \underbrace{x_1 = x_1}_{\beta_2})$, $\alpha(x_1/S) = (\beta_1 \Rightarrow S = S)$
+\end{exap}
+
+\section{Semántica de los lenguajes de primer orden}
+
+\begin{defn}
+    Sea $\LL$ un lenguaje de primer orden. Una \textbf{interpretación} de $\LL$ consiste de:
+    
+    \begin{enumerate}
+        \item Un conjunto $U$ no vacío denominado el universo de la interpretación.
+        
+        \item Si $c$ es un símbolo de constante, $c$ se interpreta como un elemento $c_U \in U$.
+        
+        \item Si $\FF$ es un símbolo de función $n$-ario $\FF$ se interpreta
+        como una función de $n$ variables. $\FF_U : U^n \to U$, 
+        ($U^n = \underbrace{U \times U \times \dots \times U}_{v \text{ veces}}$)
+        
+        \item Si $\PP$ es un símbolo de predicado $n$-ario, $\PP$ se interpreta como
+        una relación $n$-aria sobre $U$. $\PP_U \subseteq U^n$
+    \end{enumerate}
+\end{defn}
+
+\begin{defn}
+    Si $\LL$ es un lenguaje de primer orden e $I$ es una interpretación de $\LL$ con
+    universe $U$. Interpretamos a un término $S$ sin variables del siguiente modoe:
+    
+    \begin{itemize}
+        \item Si $S$ es un símbolo de constante $c$. $S_U = c_U$.
+        
+        \item Si $S = \FF\,t_1\,t_2\,\dots\,t_n$ con $\FF$ un símbolo de función
+        $n$-ario y $t_1, t_2, \dots, t_n$ términos sin variables.        
+        $S_u = \FF_U(t_{1U}, t_{2U}, \dots, t_{nU})$.
+    \end{itemize}
+\end{defn}
+
+\begin{exap}
+    $\LL$ consiste de un símbolo  de función binaria $\FF$, un símbolo de constante $c$
+    y un símbolo de predicados unario $\PP$
+    
+    \begin{enumerate}
+        \item $U = \NN$, $\FF_U = ``+"$ (suma), $c_U = 18$, $\PP_U = \{x \in \NN : x \text{ es par}\}$.
+        
+        \item $U = ``\text{Habitantes del planeta tierra}"$, $\FF_U(x,y) = x$, 
+        $c_U = ``\text{José Luis Chilavert}"$, $\PP_U = \{x \in U : x \text{ es mujer}\}$.
+    \end{enumerate}
+\end{exap}
+
+\begin{defn}[Interpretación de los enunciados (fórmulas sin variables libres)]
+    Sea $I$ una interpretación de un lenguaje $\LL$ de primer orden con universo $U$. 
+    
+    Extendemos el lenguaje $\LL$ agregando para cada $a \in U$ un símbolo de 
+    constante $c_a$ y se interpreta en $U$ el símbolo $c_a$ como sigue: $c_{aU} = a$.
+    
+    Sea $\alpha$ un enunciado del lenguaje extendido. Definimos $v_I(\alpha) \in \{0, 1\}$
+    inductivamente como sigue:
+    
+    \begin{enumerate}
+        \item Si $\alpha = \PP\,t_1\,t_2\,\dots\,t_n$ con $\PP$ un símbolo de predicado
+        $n$-ario y $t_1, t_2, \dots, t_n$ términos sin variables.
+        
+        $v_I(\alpha) = 1$ si y sólo si $(t_1, t_2, \dots, t_n) \in \PP_U$ ($\PP_U \subseteq U^n$).
+        
+        \item Si $\alpha = \lnot\beta$ con $\beta \in Form$.
+        
+        $v_I(\alpha) = 1 - v_I(\beta)$.
+        
+        \item Si $\alpha = (\beta_1 \land \beta_2)$, $\alpha = (\beta_1 \lor \beta_2)$ ó 
+        $\alpha = (\beta_1 \Rightarrow \beta_2)$.
+        
+        $v_I(\alpha) = \min\{v_I(\beta_1), v_I(\beta_2)\}$, $v_I(\alpha) = \max\{v_I(\beta_1), v_I(\beta_2)\}$
+        ó $v_I(\alpha) = \max\{1 - v_I(\beta_1), v_I(\beta_2)\}$.
+        
+        \item Si $\alpha = \exists x_j\,\beta$ con $\beta$ fórmula, si $x_j$ no es libre en $\beta$
+        
+        $v_I(\alpha) = v_I(\beta)$.
+        
+        Si $x_j$ es libre en $\beta$
+        
+        $v_I(\alpha) = \max_{a \in U}\{v_I(\beta(x_j/c_a))\}$.
+        
+        \item Si $\alpha = \forall x_j\,\beta$ si $x_j$ no es libre en $\beta$
+        
+        $v_I(\alpha) = v_I(\beta)$.
+        
+        Si $x_j$ es libre en $\beta$
+        
+        $v_I(\alpha) = \min_{a \in U}\{v_I(\beta(x_j/c_a))\}$.
+    \end{enumerate}
+\end{defn}
+
+\begin{exap}
+    $U = \NN$, $v_I(\forall x_i\,\PP\,x_i) = 1 \iff \PP(0) \land \PP(1) \land \dots \land \PP(n) \land \dots$.
+\end{exap}
+
+\end{document}
