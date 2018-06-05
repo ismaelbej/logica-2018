@@ -1,0 +1,198 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd,forest,multicol}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\ensuremath{\mathcal{F}}}
+\def\NN{\mathbb{N}}
+\def\QQ{\mathbb{Q}}
+\def\FFa{\ensuremath{\mathcal{F}_{\alpha}}}
+\def\LL{\ensuremath{\mathcal{L}}}
+\def\PP{\ensuremath{\mathcal{P}}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Sustitución de variables}
+
+\begin{defn}
+    Sea $\LL$ un lenguaje de primer orden y sea $\varphi$ en enunciado de $\LL$. 
+    Diremos que una interpretación $I$ \textbf{satisface} a $\varphi$
+    si $v_I(\varphi) = 1$.
+
+    Diremos que $\varphi$ es \textbf{satisfacible} si existe una
+    interpretación $I$ que satisface a $\varphi$. Caso contrario diremos
+    que $\varphi$ es \textbf{insatisfacible}.
+
+    Diremos que $\varphi$ es \textbf{universalmente válido} si
+    $v_I(\varphi) = 1$ para toda interpretación $I$.
+\end{defn}
+
+\begin{remk}
+    $\varphi$ es universalmente válida si y sólo si $\lnot \varphi$
+    es insatisfacible.
+\end{remk}
+
+\begin{exap}
+    Sea $\LL$ un lenguaje que consiste de un símbolo de predicado
+    binario $P$
+
+    \begin{enumerate}
+        \item Sea $\varphi = \underbrace{\forall x_1 \forall x_2 
+        \underbrace{(\overbrace{P\,x_1\,x_2}^{\text{fórmula}} \lor 
+        \lnot \overbrace{P\, x_1\,x_2)}^{\text{fórmula}}}_{\text{fórmula}}}_{\text{enunciado}}$
+
+        \item Sea $\gamma = (\forall x_1 \forall x_2 P x_1 x_2
+        \Rightarrow \forall x_2 \forall x_1 P x_1 x_2)$
+
+        Veamos que $v_I(\gamma) = 1$ para toda interpretación $I$. 
+        Sea $I = (U, P_U)$ con $P_U \subseteq U\times U$.
+
+        Supongamos por el absurdo que $v_I(\gamma) = 0$, luego
+        $v_I(\forall x_1 \forall x_2 P x_1 x_2) = 1$ y 
+        $v_I(\forall x_2 \forall x_1 P x_1 x_2) = 0$.
+        e $v_I(\forall x_1 P x_1 c_a) = 0$
+        y existe $b \in U$ tal que $v_I(P c_b c_a) = 0$ si y sólo si
+        $(b, a) \not\in P_U$. Como $v_I(\forall x_1 \forall x_2 P x_1 x_2) = 1$
+        entonces $v_I(P c_b c_a) = 1$. Absurdo.
+    \end{enumerate}
+\end{exap}
+
+\begin{defn}
+    Sea $\LL$ un lenguaje de primer orden y sea $\Gamma$ un conjunto de
+    enunciados. Diremos que una interpretación $I$ \textbf{satisface}
+    a $\Gamma$ o que $I$ es un \textbf{modelo} de $\Gamma$ si
+    $v_I(\varphi) = 1 \forall \varphi \in \Gamma$.
+    
+    Diremos que $\Gamma$ es \textbf{satisfacible} si admite un modelo.
+    
+    Si $\Gamma$ no es satisfacible diremos que $\Gamma$ es
+    \textbf{insatisfacible}.
+    
+    Si $\alpha$ es un enunciado diremos que es \textbf{consecuencia} de $\Gamma$
+    si $v_I(\alpha) = 1$ para toda interpretación $I$ que satisface a $\Gamma$.
+\end{defn}
+
+\begin{defn}
+    Un lenguaje $\LL$ de primer orden se dice un lenguaje con igualdad
+    si $\LL$ contiene un símbolo de predicado binario ``$=$'' en el que
+    se interpreta con la relación de identidad o igualdad.
+\end{defn}
+
+\begin{exap}
+    \begin{enumerate}
+        \item Sea $\LL$ un lenguaje con igualdad y un conjunto numerable 
+        $c_1, c_2, \dots, c_n, \dots$ de símbolos de constante.
+     
+        Sea $\Gamma$ el siguiente conjunto de enunciados:
+        \[\Gamma = \{ 
+            \lnot c_1 = c_2, \lnot c_1 = c_3, \lnot c_2 = c_3, \dots
+            \lnot c_i = c_j\ i\neq j\ i,j \in \NN
+        \}\]
+     
+        ¿Es $\Gamma$ satisfacible? Sí, 
+        $I = \langle \NN, =, c_{i \NN} = i\rangle$.
+     
+        \begin{remk}
+            Toda interpretación $I$ que satisface a $\Gamma$ debe
+            tener un universo infinito.
+        \end{remk}
+     
+        \item Sea $\LL$ un lenguaje con un símbolo de predicado binario $P$.
+        
+        Sea $\Gamma = \{\alpha_1, \alpha_2, \alpha_3\}$.
+        
+        $\alpha_1 = \forall x_1 \lnot P x_1 x_1$,
+        $\alpha_2 = \forall x_1 \exists x_2 P x_1 x_2$,
+        $\alpha_3 = (\forall x_1 \forall x_2 P x_1 x_2
+            \Rightarrow \exists x_3 (P x_1 x_3 \land P x_3 x_2))$
+            
+        La siguiente interpretación satisface a $\Gamma$, 
+        $I = \langle \QQ, \leq \rangle$, con $\QQ$ racionales.
+        
+        ¿$\Gamma$ admite modelos finitos? 
+        
+        \begin{itemize}
+            \item Si $\{a\} = U$ por $\alpha_1$ y $\alpha_2$ no puede ser.
+            
+            \item Si $\{a, b\} = U$ por $\alpha_2$ $P a b$
+            por $\alpha_3$ existe $x_3$ tal que $P a x_3$ y $P x_3 b$
+            pero por $\alpha_1$ no pude ser ni $a$ ni $b$.
+        \end{itemize}
+        
+        No. $U$ tiene que ser infinito.
+    \end{enumerate}
+\end{exap}
+
+\section*{Expresividad de los lenguajes de primer orden}
+
+\begin{exap}
+    Sea $\LL$ un lenguaje con igualdad. Sea 
+    $\alpha_1 = \exists x_1 \exists x_2 \lnot x_1 = x_2$
+    
+    $\alpha_1$ expresa que un conjunto tiene al menos 2 elementos.
+    
+    $\alpha_2 = \exists x_1 \exists x_2 (\lnot x_1 = x_2 \land 
+    \forall x_3 (x_3 = x_1 \lor x_3 = x_2))$.
+    
+    $\alpha_2$ expresa que un conjunto tiene exactamente 2 elementos.
+\end{exap}
+
+\begin{ejer}
+    Escribir un enunciado $\alpha$ de $\LL$ que exprese
+    
+    \begin{enumerate}[label=\emph{\alph*})]
+        \item Un conjunto tiene al menos $n$ elementos
+        
+        \item Un conjunto tiene a lo sumo $n$ elementos
+        
+        \item Un conjunto tiene exactamente $n$ elementos
+    \end{enumerate}
+\end{ejer}
+
+\begin{remk}
+    No se puede expresar en $\LL$ que un conjunto es finito.
+    
+    Más precisamente:
+
+    \begin{enumerate}[label=\emph{\alph*})]
+        \item No existe un enunciado $\alpha$ de $\LL$ tal que
+        $v_I(\alpha) = 1$ si y sólo si $I$ es finito.
+        
+        \item No existe ningún conjunto $\Gamma$ de enunciados
+        de $\LL$ tal que $I$ satisface a $\Gamma$ si y sólo si
+        el universo de $I$ es finito.
+    \end{enumerate}
+
+    La prueba requiere el uso del teorema de compacidad.
+    
+    Sea para cada $n \in \NN$ un enunciado $\alpha_n$ que
+    exprese que un conjunto tiene al menos $n$ elementos.
+    
+    Sea $\Gamma = \{ \alpha_1, \alpha_2, \dots,\alpha_n, \dots \}$.
+    
+    Una interpretación $I$ es modelo de $\Gamma$ si y sólo si
+    el universo de $I$ es infinito.
+\end{remk}
+
+\end{document}
