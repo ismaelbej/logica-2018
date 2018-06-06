@@ -1,0 +1,217 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd,forest,multicol}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\ensuremath{\mathcal{F}}}
+\def\NN{\mathbb{N}}
+\def\QQ{\mathbb{Q}}
+\def\FFa{\ensuremath{\mathcal{F}_{\alpha}}}
+\def\LL{\ensuremath{\mathcal{L}}}
+\def\PP{\ensuremath{\mathcal{P}}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Sustitución en lenguajes de primer orden}
+
+\begin{prop}
+    Sea $\LL$ un lenguaje de primer orden y sea $\varphi$ una fórmula de $\LL$
+    con una única variable libre $x$. Si $t$ es un término sin variables de
+    $\LL$ e $I$ es una interpretación  de $\LL$ entonces vale la siguiente igualdad
+
+    \[v_I(\varphi(x/t)) = v_I(\varphi(x/t_I))\] con $t_I \in U$.
+\end{prop}
+
+\begin{remk}
+    Si $U$ es el universo de $I$ y $a \in U$, entonces
+    $\varphi(x/a) = \varphi(x/c_a)$ donde $c_a$ es un símbolo de constante
+    en el que $(c_a)_I = a$.
+\end{remk}
+
+\begin{demo}
+    Hacemos inducción en $c(\varphi) = n$ donde $c(\varphi)$ es la
+    complejidad de $\varphi$.
+    
+    \begin{itemize}
+    
+        \item Si $n = 0$ $\varphi$ es una fórmula atómica
+            
+        $\varphi = P t_1 t_2 \dots t_n$ con $P$ un símbolo de predicados 
+        $n$-arios y $t_1, t_2, \dots t_n$ son términos de $\LL$.
+        
+        $\varphi(x/t) = P t_1(x/t) t_2(x/t) \dots t_n(x/t)$
+        
+        $\varphi(x/t_I) = P t_1(x/t_I) t_2(x/t_I) \dots t_n(x/t_I)$
+        
+        Veamos en general que si $s$ es un término de $\LL$ entonces
+        $(s(x/t_I))_I = s(x/t)_I$.
+        
+        Hacemos inducción en la complejidad de $s$, $c(s) = m$.
+        
+        \begin{itemize}
+            \item Si $m = 0$ $s$ es un símbolo de constante $c$ ó
+            $s$ es una variable
+            
+            Si $s = c$ $c(x/t) = c = c(x/t_I)$ y vale la igualdad.
+            
+            Si $s \neq x$ $s(x/t_I) = s = s(x/t)$ y vale la igualdad.
+            
+            Si $s = x$ $s(x/t_I) = t_I$ y $s(x/t) = t$ y vale la 
+            igualdad pues $t_I = t_I$.
+            
+            \item Si $m > 0$ $s = F^k t_1 t_2 \dots t_k$. En este caso
+            usando la hipótesis inductiva se tiene que:
+            
+            $s(x/t_I)_I = F^k_I t_1(x/t_I)_I \dots t_n(x/t_I)_I
+            = F^k_I t_1(x/t)_I \dots t_n(x/t)_I$
+        \end{itemize}
+    
+        De este resultado se deduce que 
+        $(t_1(x/t))_I, t_2(x/t)_I, \dots, t_n(x/t)_I) \in P^n_I$ si y sólo si
+        $(t_1(x/t_I))_I, t_2(x/t_I)_I, \dots, t_n(x/t_I)_I) \in P^n_I$.
+        
+        Lo que prueba $v_I(\varphi(x/t)) = v_I(\varphi(x/t_I))$ cuando
+        $\varphi$ es una fórmula atómica.
+
+        \item Si $n > 0$
+    
+        Si $\varphi = \lnot \beta$, $\varphi = (\beta_1 \lor \beta_2)$,
+        $\varphi = (\beta_1 \land \beta_2)$ ó $\varphi = (\beta_1 \Rightarrow \beta_2)$
+        con $\beta, \beta_1, \beta_2 \in Form$, usando la hipótesis
+        inductiva y el hecho que $\varphi(x/t) = \lnot \beta(x/t)$,
+        $\varphi(x/t) = (\beta_1(x/t) \star \beta_2(x/t))$ con 
+        $\star \in \{\land, \lor, \Rightarrow\}$ y además que
+        $\varphi(x/t_I) = \lnot \beta(x/t_I)$ y 
+        $\varphi(x/t_I) = (\beta_1(x/t_I) \star \beta_2(x/t_I))$
+        se desprende que $v_I(\varphi(x/t)) = v_I(\varphi(x/t_I))$.
+        
+        Si $\varphi = \exists y \beta$ con $y$ variable y $\beta \in Form$,
+        donde $x$ es libre en $\beta$.
+        
+        $v_I(\varphi(x/t)) = v_I(\exists y \beta(x/t)) = 1 \iff$ 
+        existe $a \in U$ tal que 
+        
+        $v_I(\beta(x/t)(y/a_I)) = 1 = v_I(\beta(y/a)(x/t_I))$
+        
+        $\iff$ (por hipótesis inductiva) $v_I(\beta(y/a)(x/t_I)) = 1$
+        
+        $\iff v_I(\beta(x/t_I)(y/a)) = 1 \iff v_I(\varphi(x/t_I)) = 1$.
+        
+        Si $\varphi = \forall y \beta$ la prueba es análoga.
+    \end{itemize}
+\end{demo}
+
+\begin{teor}
+    Sea $\Gamma$ un conjunto satisfacible de enunciados se verifica
+    las siguientes condiciones:
+    
+    \begin{enumerate}
+        \item Si $\forall x \varphi \in  \Gamma$ entonces 
+        $\Gamma \cup \{ \varphi(x/t) \}$ es satisfacible con $t$ 
+        un término sin variables.
+        
+        \item Si $\lnot \exists x \varphi \in \Gamma$ entonces
+        $\Gamma \cup \{ \lnot \varphi(x/t) \}$ es satisfacible.
+        
+        \item Si $\exists x \varphi \in \Gamma$ entonces 
+        $\Gamma \cup \{ \varphi(x/c) \}$ es satisfacible donde $c$
+        es un símbolo de constante que no aparece en ningún enunciado de
+        $\Gamma$.
+        
+        \item Si $\lnot \forall x \varphi \in \Gamma$ entonces 
+        $\Gamma \cup \{ \lnot \varphi(x/c) \}$ es satisfacible
+        siendo $c$ un símbolo de constante que no aparece en
+        ningún enunciado de $\Gamma$.
+    \end{enumerate}
+\end{teor}
+
+\begin{exap}
+    ``La restricción del símbolo $c$ en los casos 3) y 4) es
+    fundamental''
+    
+    $\Gamma = \{ P c, \lnot \forall x Px \}$ con $P$ un símbolo de
+    predicado unario y $c$ un símbolo de constante.
+    
+    Veamos que $\Gamma$ es satisfacible:
+    
+    Sea $I$  la siguiente interpretación $I = \langle \NN, 
+    P_{\NN}(x)\ ``x\text{ es par''}, c_{\NN} = 2 \rangle$.
+    
+    $v_I(P c) = 1$ y $v_I(\lnot \forall P x) = 1$ pues existen 
+    enteros impares.
+    
+    Ahora $\lnot P x (x/c) = \lnot P c$.
+    
+    $\Gamma \cup \{ \lnot P c\} = \{ P c, \lnot \forall x P x, \lnot P c\}$
+    es insatisfacible.
+\end{exap}
+
+\begin{demo}
+    \begin{enumerate}
+        \item []
+        
+        \item Sea $I$ una interpretación que satisface a $\Gamma$
+        en particular $v_I(\forall x \varphi) = 1$ luego
+        $v_I(\varphi(x/a)) = 1$ $\forall a \in U$ y 
+        luego $v_I(\varphi(x/t_I)) = 1$ pues $t_I \in U$.
+        
+        \item Similar a 1).
+        
+        \item Sea $I$ una interpretación con universo $U$
+        que satisface a $\Gamma$. Como $\exists x \varphi \in \Gamma$
+        entonces $v_I(\exists x \varphi) = 1$ entonces 
+        existe $a \in U$ tal que $v_I(\varphi(x/a)) = 1$.
+        
+        Sea $c$ un símbolo de constante que no aparece en
+        ningún enunciado de $\Gamma$. La siguiente interpretación
+        $K$ satisface a $\Gamma \cup \{ \varphi(x/c) \}$.
+        
+        El universo de $K$ es $U$, los símbolos de función y
+        de predicados se interpretan como en $I$. Si $c'$ es
+        un símbolo de constante diferente de $c$ $c'_K = c'_I$.
+        Si $c = c'$ $c_K = a$.
+        
+        \item La prueba es similar a 3).
+    \end{enumerate}
+\end{demo}
+
+\begin{defn}
+    Sea $\LL$ un lenguaje de primer orden y sea $I$ una interpretación
+    con universeo $U$. Diremos que un subconjunto de $A \subseteq U$
+    es \textbf{expresable} en $I$ si existe una fórmula $\varphi$ con
+    una única variable libre $x$ tal que $v_I(\varphi(x/a)) = 1 \iff a \in A$.
+\end{defn}
+
+\begin{exap}
+    $\LL = \{ =, F \}$ $F$ símbolo de función binaria.
+    $I = \langle \NN, + \rangle$
+    
+    $A = \text{pares}$, $\varphi = \exists y F y y = x$.
+    
+    $B = \text{impares}$, $\lnot \varphi$ expresa a $B$.
+    
+    $C = \{ 0 \}$, $F x x = x$
+\end{exap}
+
+\end{document}
