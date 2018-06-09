@@ -123,24 +123,24 @@
 \end{demo}
 
 \begin{teor}
-    Sea $\Gamma$ un conjunto satisfacible de enunciados se verifica
+    Sea $\Gamma$ un conjunto satisfactible de enunciados se verifica
     las siguientes condiciones:
     
     \begin{enumerate}
         \item Si $\forall x \varphi \in  \Gamma$ entonces 
-        $\Gamma \cup \{ \varphi(x/t) \}$ es satisfacible con $t$ 
+        $\Gamma \cup \{ \varphi(x/t) \}$ es satisfactible con $t$ 
         un término sin variables.
         
         \item Si $\lnot \exists x \varphi \in \Gamma$ entonces
-        $\Gamma \cup \{ \lnot \varphi(x/t) \}$ es satisfacible.
+        $\Gamma \cup \{ \lnot \varphi(x/t) \}$ es satisfactible.
         
         \item Si $\exists x \varphi \in \Gamma$ entonces 
-        $\Gamma \cup \{ \varphi(x/c) \}$ es satisfacible donde $c$
+        $\Gamma \cup \{ \varphi(x/c) \}$ es satisfactible donde $c$
         es un símbolo de constante que no aparece en ningún enunciado de
         $\Gamma$.
         
         \item Si $\lnot \forall x \varphi \in \Gamma$ entonces 
-        $\Gamma \cup \{ \lnot \varphi(x/c) \}$ es satisfacible
+        $\Gamma \cup \{ \lnot \varphi(x/c) \}$ es satisfactible
         siendo $c$ un símbolo de constante que no aparece en
         ningún enunciado de $\Gamma$.
     \end{enumerate}
@@ -153,7 +153,7 @@
     $\Gamma = \{ P c, \lnot \forall x Px \}$ con $P$ un símbolo de
     predicado unario y $c$ un símbolo de constante.
     
-    Veamos que $\Gamma$ es satisfacible:
+    Veamos que $\Gamma$ es satisfactible:
     
     Sea $I$  la siguiente interpretación $I = \langle \NN, 
     P_{\NN}(x)\ ``x\text{ es par''}, c_{\NN} = 2 \rangle$.
@@ -164,7 +164,7 @@
     Ahora $\lnot P x (x/c) = \lnot P c$.
     
     $\Gamma \cup \{ \lnot P c\} = \{ P c, \lnot \forall x P x, \lnot P c\}$
-    es insatisfacible.
+    es insatisfactible.
 \end{exap}
 
 \begin{demo}
