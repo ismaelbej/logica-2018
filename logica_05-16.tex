@@ -1,0 +1,253 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,enumitem,tikz,tikz-cd,forest,multicol}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definición}[section]
+\newtheorem{exap}{Ejemplo}[section]
+\newtheorem{prop}{Proposición}[section]
+\newtheorem{coro}{Corolario}[section]
+\newtheorem{teor}{Teorema}[section]
+
+\newtheorem*{prob}{Problema}
+\newtheorem*{ejer}{Ejercicio}
+
+\theoremstyle{remark}
+\newtheorem*{remk}{Observación}
+\newtheorem*{notc}{Notación}
+\newtheorem*{demo}{Demostración}
+\newtheorem*{prue}{Prueba}
+
+\def\FF{\ensuremath{\mathcal{F}}}
+\def\NN{\mathbb{N}}
+\def\QQ{\mathbb{Q}}
+\def\FFa{\ensuremath{\mathcal{F}_{\alpha}}}
+\def\LL{\ensuremath{\mathcal{L}}}
+\def\PP{\ensuremath{\mathcal{P}}}
+
+\title{Lógica y Computabilidad}
+\author{XXX}
+\date{1er Cuatrimestre 2018}
+
+\begin{document}
+\maketitle
+
+\section{Árbol de refutación (para lógica de primer orden)}
+
+Reglas para los cuantificadores
+
+\begin{itemize}
+    \item $R_{\forall} = \dfrac{\forall x \varphi}{\varphi(x/t)}$, $t$
+    es un término sin variables.
+    
+    \item $R_{\lnot \exists} = \dfrac{\lnot \exists \varphi}{\lnot \varphi(x/t)}$
+    
+    \item $R_{\exists} = \dfrac{\exists x \varphi}{\varphi(x/c)}$,
+    $c$ es un símbolo de constante con restricciones.
+    
+    \item $R_{\lnot \forall} = \dfrac{\lnot \forall x \varphi}{\lnot \varphi(x/c)}$
+\end{itemize}
+
+\begin{defn}
+    Sea $A$ un árbol cuyos elementos son enunciados de un lenguaje de
+    primer orden. Sea $\alpha$ un nodo terminal de $A$. Diremos que un
+    árbol $A'$ es una \textbf{extensión inmediata} de $A$ si se verifica
+    las siguientes condiciones:
+    
+    \begin{enumerate}
+        \item Si $\alpha'$ es un antecesor de $\alpha$ del tipo 
+        \begin{enumerate}
+            \item $\alpha' = (\alpha_1 \lor \alpha_2)$
+            \item $\alpha' = (\alpha_1 \Rightarrow \alpha_2)$
+            \item $\alpha' = \lnot (\alpha_1 \land \alpha_2)$
+        \end{enumerate}
+        se agregan en cada uno de los dos casos dos nuevos nodos terminales:
+        \begin{enumerate}
+            \item $\{\alpha_1, \alpha_2\}$
+            \item $\{\lnot \alpha_1, \alpha_2\}$
+            \item $\{\lnot \alpha_1, \lnot \alpha_2\}$
+        \end{enumerate}
+    
+        \item Si $\alpha' = (\alpha_1 \land \alpha_2)$,
+        $\alpha' = \lnot (\alpha_1 \Rightarrow \alpha_2)$,
+        $\alpha' = \lnot (\alpha_1 \lor \alpha_2)$. Se agregan como nodo 
+        terminal a $\alpha_1$ ó $\alpha_2$, $\alpha_1$ ó $\lnot \alpha_2$,
+        $\lnot \alpha_1$ ó $\lnot \alpha_2$ respectivamente.
+        
+        \item Si $\alpha' = \lnot\lnot \alpha_1$ se agrega como nuevo
+        nodo terminal $\alpha_1$.
+        
+        \item Si $\alpha' = \forall x \varphi$ ó $\alpha' = \lnot \exists x \varphi$
+        se agrega como nuevo nodo terminal $\varphi(x/t)$ en el primer caso y
+        $\lnot\varphi(x/t)$ en el segundo caso, donde $t$ es un término sin
+        variables.
+        
+        \item Si $\alpha' = \exists x \varphi$ ó $\alpha' = \lnot \forall x \varphi$
+        se agrega como nuevo nodo terminal $\varphi(x/c)$ donde $c$ es un
+        símbolo de constante que no aparece en ningún enunciado de $A$.
+        En el otro caso se agrega como nodo terminal $\lnot \varphi(x/c)$
+        $c$ con la misma restricción.
+    \end{enumerate}
+\end{defn}
+
+\begin{defn}
+    Sea $\varphi$ un enunciado de un lenguaje de primer orden. Diremos que
+    $A$ es un \textbf{árbol de refutación} de $\varphi$ si existe una sucesión
+    $A_0, A_1, \dots, A_n$ de árboles tales que $A_0 = \{\varphi\}$,
+    $A_{i+1}$ es extensión inmediata de $A_i$ para $0 \le i \le n - 1$
+    y $A_n = A$.
+\end{defn}
+
+\begin{remk}
+    Las nociones de rama abierta, rama cerrada, árbol abierto, árbol cerrado
+    es la misma que para la lógica proposicional cambiando la palabra
+    fórmula por enunciado.
+\end{remk}
+
+\begin{remk}
+    Si $\Gamma = \{\varphi_1, \varphi_2, \dots, \varphi_n \}$ es un conjunto
+    finito de enunciados, diremos que $A$ es un árbol de refutación de $\Gamma$
+    si y sólo si $A$ es un árbol de refutación de $(\varphi_1 \land \varphi_2
+    \land \dots \land \varphi_n)$.
+\end{remk}
+
+\begin{defn}
+    Si $\LL$ es un lenguaje de primer orden extendemos el lenguaje $\LL$
+    agregandole un conjunto numerable $c_1, c_2, \dots, c_n, \dots$
+    de nuevos símbolos de constante.
+    
+    A este nuevo lenguaje se lo denota $\LL^{\PP}$ y denomina lenguaje
+    con parámetros.
+\end{defn}
+
+\begin{prop}
+    Sea $\LL$ un lenguaje de primer orden y sea $\Gamma$ un conjunto finito 
+    y satisfactible de enunciados de $\LL$. Si $A$ es un árbol de refutación
+    de $\Gamma$ entonces $A$ debe contener una rama abierta. 
+\end{prop}
+
+\begin{demo}
+    Se hace inducción en $n$ donde $A_0 = \{\varphi\}$, $A_{i+1}$
+    extensión inmediata de $A_i$ $\forall 0 \le i \le n - 1$ y se utiliza
+    el hecho siguiente si $H$ es un conjunto satisfactible de enunciados
+    y $\forall x \varphi \in H$ entonces $H \cup \{ \varphi(x/t) \}$
+    es satisfactible con $t$ un término sin variables y un resultado
+    análogo vale para los otros conectivos.
+\end{demo}
+
+\begin{coro}
+    Si $\LL$ es un lenguaje de primer orden y $\varphi$ es un enunciado de
+    $\LL$ tal que $\lnot \varphi$ admite un árbol de refutación cerrado.
+    Entonces $\varphi$ es universalmente válido.
+\end{coro}
+
+\begin{exap}
+    \begin{enumerate}
+        \item[]
+        
+        \item Sea $\LL$ un lenguaje de primer orden y sea
+        $\varphi = (\forall x_1 \forall x_2 P x_1 x_2 \Rightarrow
+        \forall x_2 \forall x_1 P x_1 x_2)$ con $P$ un símbolo de
+        predicado binario ($P \in \LL$).
+        
+        Trabajamos en $\LL^{\PP}$
+        
+        Sea $A$ el siguiente árbol de $\lnot \varphi$
+
+		\begin{forest}
+            [$\lnot \varphi$
+                [$\forall x_1 \forall x_2 P x_1 x_2$
+                    [$\lnot \forall x_2 \forall x_1 P x_1 x_2$
+                        [$\lnot \forall x_1 P x_1 c_1$
+                            [$\lnot P c_2 c_1$
+                                [$\forall x_2 P c_2 x_2$
+                                    [$P c_2 c_1$]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        \end{forest}
+    
+        $A$ es cerrado, luego $\varphi$ es universalmente válida.
+        
+        \item Sea $\LL$ un lenguaje de primer orden con un símbolo de 
+        constante $c$ y un símbolo de predicado unario $P$,
+        sea $\varphi = (P c \Rightarrow \exists x_1 P x_1)$.
+        
+        Sea $A$ el siguiente árbol de $\lnot \varphi$:
+        
+        \begin{forest}
+            [$\lnot \varphi$
+                [$P c$
+                    [$\lnot \exists x_1 P x_1$
+                        [$\lnot P c$]
+                    ]
+                ]
+            ]
+        \end{forest}
+
+        Si $\LL$ contiene un símbolo de función unario $\FF$ para cada $n \in \NN$
+        sea $A_n$ el siguiente árbol de refutación
+        
+        \begin{forest}
+            [$\lnot \varphi$
+                [$P c$
+                    [$\lnot \exists x_1 P x_1$
+                        [$\lnot P \FF c$
+                            [$\lnot P \FF \FF c$
+                                [$\lnot P \underbrace{\FF \dots \FF}_{n \text{ veces}} c$]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        \end{forest}
+    \end{enumerate}
+\end{exap}
+
+\begin{defn}
+    Sea $\LL$ un lenguaje de primer orden y sea $\Gamma$ un conjunto de enunciados
+    de $\LL$. Diremos que $\Gamma$ es \textbf{saturado} si verifica las
+    siguientes condiciones:
+    
+    \begin{enumerate}
+        \item Si $\varphi \in \Gamma$ entonces $\lnot \varphi \not\in \Gamma$
+        
+        \item Si $\lnot \lnot \varphi \in \Gamma$ entonces $\varphi \in \Gamma$
+        
+        \item Si $(\varphi_1 \lor \varphi_2) \in \Gamma$ entonces
+        $\varphi_1 \in \Gamma$ ó $\varphi_2 \in \Gamma$
+
+        \item Si $(\varphi_1 \land \varphi_2) \in \Gamma$ entonces
+        $\varphi_1 \in \Gamma$ y $\varphi_2 \in \Gamma$
+
+        \item Si $(\varphi_1 \Rightarrow \varphi_2) \in \Gamma$ entonces
+        $\lnot \varphi_1 \in \Gamma$ ó $\varphi_2 \in \Gamma$
+
+        \item Si $\lnot (\varphi_1 \lor \varphi_2) \in \Gamma$ entonces
+        $\lnot \varphi_1 \in \Gamma$ y $\lnot \varphi_2 \in \Gamma$
+
+        \item Si $\lnot (\varphi_1 \land \varphi_2) \in \Gamma$ entonces
+        $\lnot \varphi_1 \in \Gamma$ ó $\lnot \varphi_2 \in \Gamma$
+
+        \item Si $\lnot (\varphi_1 \Rightarrow \varphi_2) \in \Gamma$ entonces
+        $\varphi_1 \in \Gamma$ y $\lnot \varphi_2 \in \Gamma$
+        
+        \item Si $\forall x \varphi \in \Gamma$ entonces
+        $\varphi(x/t) \in \Gamma$ para todo término $t$ sin variables.
+
+        \item Si $\lnot \exists x \varphi \in \Gamma$ entonces
+        $\lnot \varphi(x/t) \in \Gamma$, $t$ sin variables.
+
+        \item Si $\exists x \varphi \in \Gamma$ entonces
+        $\varphi(x/c) \in \Gamma$ para algún símbolo de constante $c$.
+
+        \item Si $\lnot \forall x \varphi \in \Gamma$ entonces
+        $\lnot \varphi(x/c) \in \Gamma$ para algún símbolo de constante $c$.
+    \end{enumerate}
+\end{defn}
+
+\end{document}
